@@ -7,20 +7,42 @@
     <link rel="stylesheet" href="./css/main.css" />
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to Semitae Vitae</h1>
-        <h3>The Paths of Life</h3>
-        <p>Choose how you will live.</p>
-        <form class="new-game-form">
-            <input class="name-input" type="text" aria-label="name-input"><br>
-        
-            <button class="start-button" type="submit" aria-label="start-button">Enter the City</button>
-        </form>
+    <!-- Welcome page for new players -->
+    <section id="welcome-page">
+        <div class="welcome-container">
+            <h1>Welcome to Semitae Vitae</h1>
+            <h3>The Paths of Life</h3>
+            <p>Choose how you will live.</p>
+            <form class="new-game-form">
+                <input class="name-input" type="text" aria-label="name-input"><br>
+            
+                <button class="start-button" type="submit" aria-label="start-button">Enter the City</button>
+            </form>
 
-        <div class="footer">
-            <p>Licensed under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>.<br>
-               Semitae Vitae © 2025 <a href="https://github.com/synapseinteractivellc/SemitaeVitae" target="_blank" rel="noopener">Synapse Interactive LLC</a>.</p>
+            <div class="footer">
+                <p>Licensed under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>.<br>
+                Semitae Vitae © 2025 <a href="https://github.com/synapseinteractivellc/SemitaeVitae" target="_blank" rel="noopener">Synapse Interactive LLC</a>.</p>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Game page where all the fun takes place -->
+     <section id="game-page">
+        <div class="main-panel">
+            <sidebar id="resource-panel">
+
+            </sidebar>
+            <div id="game-panel">
+
+            </div>
+            <sidebar id="stats-panel">
+
+            </sidebar>
+            <sidebar id="action-log">
+
+            </sidebar>
+        </div>
+     </section>
+    <script src="./game.js"></script>
 </body>
 </html>
