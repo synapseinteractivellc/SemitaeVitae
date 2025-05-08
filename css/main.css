@@ -1,0 +1,135 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f2f5;
+}
+
+.container {
+    text-align: center;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #4a4a4a;
+}
+
+h3 {
+    color: #575757
+}
+
+p {
+    color: #666;
+}
+
+.new-game-form {
+    padding: 1px;
+}
+
+.name-input {
+    margin: 5px;
+}
+
+.footer {
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.footer a {
+    color: #999;
+    text-decoration: none;
+}
+
+.footer a:hover {    
+    color: #3a7bd5;
+    text-decoration: underline;
+}
+
+
+/* Start button */
+.start-button {
+    background: hsl(220, 10%, 10%);
+    color: hsl(0, 0%, 100%);
+    padding: 12px 24px;
+    border-radius: hsl(220, 10%, 40%);
+    font-weight: 600;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px hsla(0, 0%, 0%, 0.2);;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Create a subtle gradient background that shifts on hover */
+.start-button::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: linear-gradient(
+    120deg,
+    hsl(190, 70%, 65%),
+    hsl(190, 80%, 65%),
+    hsl(190, 70%, 60%)
+);
+background-size: 200% 100%;
+transition: all 0.9s ease;
+z-index: -1;
+}
+
+/* Light effect that moves across the button */
+.start-button::after {
+content: '';
+position: absolute;
+top: 0;
+left: -100%;
+width: 100%;
+height: 100%;
+background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+);
+transition: all 0.9s ease;
+z-index: 1;
+}
+
+.start-button:hover {
+transform: translateY(-3px);
+box-shadow: 0 7px 14px hsla(210, 70%, 30%, 0.2);
+color: white;
+}
+
+.start-button:hover::before {
+background-position: 100% 0;
+}
+
+.start-button:hover::after {
+left: 100%;
+}
+
+.start-button:active {
+transform: translateY(1px);
+box-shadow: 0 3px 8px hsla(210, 70%, 30%, 0.3);
+}
+
+.start-button:focus {
+outline: none;
+box-shadow: 0 0 0 3px hsla(210, 70%, 60%, 0.3), 0 4px 10px hsla(210, 70%, 30%, 0.2);
+}
