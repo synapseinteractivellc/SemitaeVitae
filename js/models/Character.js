@@ -36,3 +36,5 @@ class Character {
         this.characterAchievements = data.characterAchievements || {};
     }
 }
+
+export { Character };
