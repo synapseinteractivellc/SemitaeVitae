@@ -69,8 +69,11 @@ class Game {
     showGamePage() {
         // Hide welcome page and show game page
         this.welcomePage.style.display = 'none';
-        this.gamePage.style.display = 'block';
+        this.gamePage.style.display = 'grid';
+        
     }
+
+    
     
     initGame() {
         if (this.initialized) return;

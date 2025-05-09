@@ -7,51 +7,51 @@
     <link rel="stylesheet" href="./css/main.css" />
 </head>
 <body>
-    <!-- Welcome page for new players -->
-    <section id="welcome-page">
-        <div class="welcome-container">
-            <h1>Welcome to Semitae Vitae</h1>
-            <h3>The Paths of Life</h3>
-            <p>Choose how you will live.</p>
-            <form class="new-game-form">
-                <input class="name-input" type="text" aria-label="name-input"><br>
-            
-                <button class="start-button" type="submit" aria-label="start-button">Enter the City</button>
-            </form>
+    <!-- Header is common to both pages -->
+    <header class="header">
+        <h1>Semitae Vitae</h1>
+        <p id="character-info">The Paths of Life</p>
+    </header>
 
-            <div class="footer">
-                <p>Licensed under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>.<br>
-                Semitae Vitae © 2025 <a href="https://github.com/synapseinteractivellc/SemitaeVitae" target="_blank" rel="noopener">Synapse Interactive LLC</a>.</p>
+    <!-- Content area will contain either welcome page or game page -->
+    <div class="content-area">
+        <!-- Welcome page for new players -->
+        <section id="welcome-page">
+            <div class="welcome-container">
+                <h3>Welcome</h3>
+                <p>Choose how you will live.</p>
+                <form class="new-game-form">
+                    <input class="name-input" type="text" aria-label="name-input" placeholder="Enter your name"><br>
+                    <button class="start-button" type="submit" aria-label="start-button">Enter the City</button>
+                </form>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Game page where all the fun takes place -->
-     <section id="game-page">
-        <header class="header">
-            <h1>Semitae Vitae</h1>
-            <p class="character-info">Name the Level 0 Class</p>
-        </header>
-        <div class="main-panel">
-            
-            <sidebar id="resource-panel">
-
-            </sidebar>
-            <div id="game-panel">
-
+        <!-- Game page where all the fun takes place -->
+        <section id="game-page">
+            <div class="main-panel">
+                <div id="resource-panel">
+                    <h3>Resources</h3>
+                </div>
+                <div id="game-panel">
+                    <h2>Game Content</h2>
+                </div>
+                <div id="stats-panel">
+                    <h3>Stats</h3>
+                </div>
+                <div id="action-log">
+                    <h3>Action Log</h3>
+                </div>
             </div>
-            <sidebar id="stats-panel">
+        </section>
+    </div>
 
-            </sidebar>
-            <sidebar id="action-log">
+    <!-- Footer is common to both pages -->
+    <footer class="footer">
+        <p>Licensed under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>.<br>
+        Semitae Vitae © 2025 <a href="https://github.com/synapseinteractivellc/SemitaeVitae" target="_blank" rel="noopener">Synapse Interactive LLC</a>.</p>
+    </footer>
 
-            </sidebar>            
-        </div>
-        <footer class="footer">
-            <p>Licensed under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>.<br>
-            Semitae Vitae © 2025 <a href="https://github.com/synapseinteractivellc/SemitaeVitae" target="_blank" rel="noopener">Synapse Interactive LLC</a>.</p>
-        </footer>
-     </section>
     <script src="./game.js" type="module"></script>
 </body>
 </html>

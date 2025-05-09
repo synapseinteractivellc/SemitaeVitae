@@ -1,45 +1,52 @@
+/* Common layout for both pages */
 body {
     font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     margin: 0;
     background-color: #f0f2f5;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Use full viewport height */
+    overflow: hidden; /* Prevent scrolling */
 }
 
-.welcome-container {
-    text-align: center;
-    padding: 2rem;
+/* Header styling */
+.header {
+    width: 100%;
     background-color: white;
-    border-radius: 8px;
+    text-align: left;
+    padding: 0.5rem 2rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-    color: #4a4a4a;
+#character-info {
+    margin: 0;
 }
 
-h3 {
-    color: #575757
+/* Main content area that will contain either welcome or game content */
+.content-area {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* This centers content vertically */
+    padding: 0;
+    margin: 10px 0; /* Add vertical margin to create space from header and footer */
+    overflow: hidden;
 }
 
-p {
-    color: #666;
-}
-
-.new-game-form {
-    padding: 1px;
-}
-
-.name-input {
-    margin: 5px;
-}
-
+/* Footer styling - increased height */
 .footer {
-    margin-top: 2rem;
+    width: 100%;
+    background-color: white;
+    padding: 0.5rem 2rem;
+    text-align: center;
     font-size: 0.8rem;
     color: #999;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    height: 45px; /* Increased height to prevent clipping */
+    min-height: 45px; /* Ensure minimum height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
 }
 
 .footer a {
@@ -52,154 +59,110 @@ p {
     text-decoration: underline;
 }
 
+/* Welcome page styling */
+#welcome-page {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    justify-content: center; /* Center content vertically */
+}
+
+.welcome-container {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 1.5rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #4a4a4a;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+h3 {
+    color: #575757;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+p {
+    color: #666;
+    margin: 0.5rem 0;
+}
+
+.new-game-form {
+    padding: 1px;
+}
+
+.name-input {
+    margin: 5px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 60%;
+}
 
 /* Start button */
 .start-button {
-    background: hsl(220, 10%, 10%);
-    color: hsl(0, 0%, 100%);
-    padding: 12px 24px;
-    border-radius: hsl(220, 10%, 40%);
-    font-weight: 600;
-    font-size: 16px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-    cursor: pointer;
+    background-color: #5bccf6; /* Light blue background */
+    color: white;
     border: none;
     border-radius: 25px;
-    box-shadow: 0 2px 4px hsla(0, 0%, 0%, 0.2);;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-}
-
-/* Create a subtle gradient background that shifts on hover */
-.start-button::before {
-content: '';
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: linear-gradient(
-    120deg,
-    hsl(190, 70%, 65%),
-    hsl(190, 80%, 65%),
-    hsl(190, 70%, 60%)
-);
-background-size: 200% 100%;
-transition: all 0.9s ease;
-z-index: -1;
-}
-
-/* Light effect that moves across the button */
-.start-button::after {
-content: '';
-position: absolute;
-top: 0;
-left: -100%;
-width: 100%;
-height: 100%;
-background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-);
-transition: all 0.9s ease;
-z-index: 1;
+    padding: 10px 24px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
 .start-button:hover {
-transform: translateY(-3px);
-box-shadow: 0 7px 14px hsla(210, 70%, 30%, 0.2);
-color: white;
+    background-color: #45b6e0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
-.start-button:hover::before {
-background-position: 100% 0;
-}
-
-.start-button:hover::after {
-left: 100%;
-}
-
-.start-button:active {
-transform: translateY(1px);
-box-shadow: 0 3px 8px hsla(210, 70%, 30%, 0.3);
-}
-
-.start-button:focus {
-outline: none;
-box-shadow: 0 0 0 3px hsla(210, 70%, 60%, 0.3), 0 4px 10px hsla(210, 70%, 30%, 0.2);
-}
-
 
 /* Game Page Layout and Elements */
 #game-page {
     display: none; /* Initially hidden */
     width: 100%;
-    height: 100vh;
-    background-color: #f8f9fa;
-}
-
-.header {
-    text-align: left;
+    height: 100%;
 }
 
 .main-panel {
     display: grid;
-    grid-template-columns: 200px 1fr 200px;
-    grid-template-rows: 1fr 200px;
-    grid-template-areas: 
-        "resources game stats"
-        "resources log stats";
-    gap: 10px;
-    height: 100%;
-    padding: 20px;
+    grid-template-columns: 12fr 61fr 12fr 15fr;
+    gap: 2px;
+    padding: 2px;
+    height: calc(100% - 10px); /* Adjust height to leave space for margin */
+    overflow: hidden;
 }
 
-#resource-panel {
-    grid-area: resources;
+#resource-panel, #game-panel, #stats-panel, #action-log {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 15px;
+    padding: 5px;
+    overflow: auto; /* Allow scrolling within panels if needed */
 }
 
-#game-panel {
-    grid-area: game;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-}
-
-#stats-panel {
-    grid-area: stats;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-}
-
-#action-log {
-    grid-area: log;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    overflow-y: auto;
+#resource-panel h3, #stats-panel h3, #action-log h3 {
+    margin-top: 0;
 }
 
 .action-buttons {
-    margin-top: 20px;
+    margin-top: 15px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
 .action-buttons button {
-    padding: 8px 16px;
+    padding: 6px 12px;
     background-color: #3a7bd5;
     color: white;
     border: none;
@@ -213,12 +176,12 @@ box-shadow: 0 0 0 3px hsla(210, 70%, 60%, 0.3), 0 4px 10px hsla(210, 70%, 30%, 0
 }
 
 .log-entries {
-    max-height: 150px;
     overflow-y: auto;
+    max-height: calc(100% - 30px); /* Leave room for heading */
 }
 
 .log-entries p {
-    margin: 5px 0;
-    padding: 5px;
+    margin: 3px 0;
+    padding: 3px;
     border-bottom: 1px solid #f0f0f0;
 }
