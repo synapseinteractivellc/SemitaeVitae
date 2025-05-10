@@ -1,0 +1,105 @@
+[
+	{
+		"id": "pouch",
+		"desc": "Keep your money safe.",
+		"require": "g.gold>=5",
+		"max": 3,
+		"cost": {
+			"gold": 5
+		},
+		"flavor": "Seems a tad pricey for a bag.",
+		"mod": {
+			"gold.max": 10
+		},
+		"group": "storage"
+	},	
+	{
+		"id": "purse",
+		"desc": "Common way to carry coins.",
+		"require": "g.gold>=20",
+		"max": 2,
+		"cost": {
+			"gold": 15
+		},
+		"mod": {
+			"gold.max": 20
+		},
+		"group": "storage"
+	},
+	{
+		"id": "satchel",
+		"desc": "Carry more scrolls.",
+		"require": "g.scrolls>=10",
+		"max": 1,
+		"scale": 2,
+		"cost": {
+			"gold": 50
+		},
+		"mod": {
+			"scrolls.max": 15
+		},
+		"group": "storage"
+	},
+	{
+		"id": "gembag",
+		"name": "velvet bag",
+		"desc": "Small bag keeps gems safe without scratching.",
+		"require": "g.gems>=5",
+		"max": 2,
+		"cost": {
+			"gold": 300
+		},
+		"flavor": "Who prices these bags?!",
+		"mod": {
+			"magicgems.max": 1,
+			"gems.max": 5
+		},
+		"group": "storage"
+	},
+	{
+		"id": "gembox",
+		"name": "gem box",
+		"desc": "Finely crafted box for storing magic gems.",
+		"require": ["tier0", "magicgems"],
+		"max": 5,
+		"cost": {
+			"gems": 15,
+			"gold": 800
+		},
+		"mod": {
+			"magicgems.max": 2,
+			"gems.max": 3
+		},
+		"group": "storage"
+	},
+	{
+		"id": "herbbag",
+		"name": "herb pouch",
+		"desc": "Bag for holding herbs.",
+		"require": "g.herbalism>=4",
+		"max": 3,
+		"cost": {
+			"gold": 70
+		},
+		"mod": {
+			"herbs.max": 10
+		},
+		"flavor": "It holds herbs.",
+		"group": "storage"
+	},
+	{
+		"id": "runebag",
+		"name": "rune pouch",
+		"desc": "Pouch for holding runes.",
+		"require": "g.runelore>=2",
+		"max": 5,
+		"cost": {
+			"gems": 5,
+			"research": 500
+		},
+		"mod": {
+			"runestones.max": 5
+		},
+		"group": "storage"
+	}
+]

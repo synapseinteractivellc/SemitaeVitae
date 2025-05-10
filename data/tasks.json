@@ -1,0 +1,50 @@
+[
+	{
+		"id": "cleanstables",
+		"name": "clean stables",
+		"desc": "Working from home.",
+		"verb": "cleaning",
+		"fill": "gold",
+		"locked": false,
+		"cost": {
+			"stamina": 1
+		},
+		"result": {
+			"gold": 1
+		},
+		"flavor": "It's stable employment.",
+		"group": "starting out"
+	},
+    {
+		"id": "chopwood",
+		"name": "chop wood",
+		"desc": "Working in the forest.",
+		"verb": "chopping",
+		"fill": "wood",
+		"locked": false,
+		"cost": {
+			"stamina": 1
+		},
+		"result": {
+			"wood": 1
+		},
+		"flavor": "It's stable employment.",
+		"group": "starting out"
+	},
+    {
+		"id": "huntanimals",
+		"name": "hunt animals",
+		"desc": "Working in the forest.",
+		"verb": "hunting",
+		"fill": "leather",
+		"locked": false,
+		"cost": {
+			"stamina": 1
+		},
+		"result": {
+			"leather": 1
+		},
+		"flavor": "It's stable employment.",
+		"group": "starting out"
+	}    
+]

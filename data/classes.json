@@ -1,0 +1,344 @@
+[
+    {
+        "id": "recruit",
+        "desc": "A raw recruit with a weapon.",
+        "actname": "Trainee",
+        "actdesc": "Military trainee.",
+        "require": "rage",
+        "log": {
+            "name": "Trainee",
+            "desc": "After signing your life away you're now a trainee in the military."
+        },
+        "cost": {
+            "gold": 20            
+        },
+        "result": {
+            "rage.max": 5,
+            "player.exp": 5
+        }
+    },
+    {
+        "id": "novice",
+        "desc": "A novice crafter.",
+        "actname": "Novice",
+        "actdesc": "Novice crafter.",
+        "require": "g.focusintent>3",
+        "log": {
+            "name": "Novice",
+            "desc": "After paying a huge amount, you become a novice crafter."
+        },
+        "cost": {
+            "gold": 20,
+            "leather": 10,
+            "wood": 10,
+            "iron": 10
+        },
+        "result": {
+            "focus.max": 5,
+            "player.exp": 5
+        }
+    },
+	{
+		"id": "apprentice",
+		"desc": "Apprentice to a notable wizard.",
+		"actname": "Apprenticeship",
+		"actdesc": "Become an apprentice.",
+		"require": "research",
+		"log": {
+			"name": "Apprentice",
+			"desc": "After paying a small fee, you became apprenticed to a local wizard."
+		},
+		"cost": {
+			"research": 10,
+			"gold": 20
+		},
+		"result": {
+			"research.max": 10,
+			"player.exp": 5
+		}
+	},
+	{
+		"id": "herbalist",
+		"tags": "t_job",
+		"actdesc": "Gather herbs for your master's potions and alchemy.",
+		"require": "herbalism",
+		"cost": {
+			"gold": 100,
+			"research": 100,
+			"arcana": 2
+		},
+		"result": {
+			"player.exp": 10
+		},
+		"mod": {
+			"gold.rate": 0.1,
+			"magelore.max": 2,
+			"herbalism.max": 3,
+			"alchemy.max": 2
+		}
+	},
+	{
+		"id": "scribe",
+		"tags": "t_job",
+		"actdesc": "Become your master's personal scribe.",
+		"require": "scribescroll",
+		"cost": {
+			"gold": 100,
+			"research": 100,
+			"arcana": 2
+		},
+		"result": {
+			"player.exp": 10
+		},
+		"mod": {
+			"gold.rate": 0.1,
+			"research.max": 10,
+			"arcana.rate": 0.0001,
+			"magelore.max": 2.5,
+			"history.max": 1
+		},
+		"flavor": "When I get a little money I buy books, and if any is left I buy food and clothes."
+	},
+	{
+		"id": "neophyte",
+		"actdesc": "The final step on the twisting stairwell of apprenticeship.",
+		"require": "(g.magelore>5)&&g.research.max>=125",
+		"log": {
+			"name": "Neophyte",
+			"desc": "Your master has decided you are ready to take the next step on the path of wizardry."
+		},
+		"flavor": "Why does Master charge so many fees?",
+		"cost": {
+			"gold": 150,
+			"research": 175,
+			"arcana": 3
+		},
+		"result": {
+			"sp": 1,
+			"player.exp": 10
+		},
+		"mod": {
+			"research.max": 10,
+			"arcana.rate": 0.0001,
+			"magelore.max": 1
+		}
+	},
+	{
+		"id": "adept",
+		"name": "adept",
+		"tags": "t_tier0",
+		"desc": "Your master behind you, you set off into the world alone. You had better find a new place to stay.",
+		"mod": {
+			"tier0": true
+		}
+	},
+	{
+		"id": "magician",
+		"tags": "t_tier1,t_manaclass,t_knowledgeclass",
+		"desc": "Magic in its purest form.",
+		"actdesc": "Pursue the path of pure magic.",
+		"require": "g.tier0>0&&g.magelore>=10",
+		"cost": {
+			"research": 500,
+			"arcana": 15,
+			"gold": 500
+		},
+		"result": {
+			"sp": 1
+		},
+		"mod": {
+			"tier1": true,
+			"research.max": 100,
+			"arcana.rate": 0.001,
+			"mana.max": 2,
+			"mana.rate": 0.4,
+			"mysticism.mod.mana.rate": 0.05,
+			"magelore.max": 1,
+			"astronomy.max": 1,
+			"languages.max": 1
+		}
+	},
+	{
+		"id": "elementalist",
+		"desc": "Master of elemental forces.",
+		"require": "g.tier0>0&&g.airlore>=3&&g.firelore>=3&&g.earthlore>=3&&g.waterlore>=3",
+		"tags": "t_tier1,t_elementalclass",
+		"cost": {
+			"arcana": 12,
+			"research": 1000,
+			"codices": 20,
+			"gems": 10
+		},
+		"result": {
+			"sp": 1
+		},
+		"mod": {
+			"tier1": true,
+			"research.max": 5,
+			"elemental.max": 2,
+			"elemental.rate": 0.2
+		}
+	},
+	{
+		"id": "sorcerer",
+		"desc": "A wielder of raw magical power.",
+		"require": "g.tier3>0&&(g.earthlore>=15||g.waterlore>=15||g.firelore>=15)&&(g.t_elementalclass>0)",
+		"tags": "t_tier4,t_elementalclass",
+		"cost": {
+			"research": 3000,
+			"managem": 5,
+			"firegem": 15,
+			"earthgem": 15,
+			"watergem": 15,
+			"arcana": 25
+		},
+		"result": {
+			"sp": 1
+		},
+		"mod": {
+			"tier4": true,
+			"magelore.max": 1,
+			"mana.max": 1,
+			"earthlore.max": 2,
+			"waterlore.max": 2,
+			"firelore.max": 2
+		}
+	},
+	{
+		"id": "mage",
+		"desc": "Member of an arcane order.",
+		"tags": "t_tier2,t_manaclass,t_knowledgeclass",
+		"require": "g.tier1>0&&g.magelore>=17",
+		"cost": {
+			"research": 2000,
+			"arcana": 15,
+			"tomes": 5
+		},
+		"result": {
+			"sp": 2
+		},
+		"mod": {
+			"tier2": true,
+			"research.max": 40,
+			"firelore.max": 1,
+			"mysticism.max": 2,
+			"enchanting.max": 1,
+			"magelore.max": 2,
+			"mana.max": 3
+		}
+	},
+	{
+		"id": "highmage",
+		"name": "high mage",
+		"desc": "Elite of an arcane order.",
+		"tags": "t_tier3,t_manaclass,t_knowledgeclass",
+		"require": "g.tier2>0&&g.magelore>=21",
+		"cost": {
+			"research": 5000,
+			"arcana": 20,
+			"tomes": 10
+		},
+		"result": {
+			"sp": 2
+		},
+		"mod": {
+			"tier3": true,
+			"research.max": 50,
+			"firelore.max": 1,
+			"mysticism.max": 2,
+			"alchemy.max": 1,
+			"spellcraft.max": 2,
+			"crafting.max": 1,
+			"magelore.max": 2
+		}
+	},
+	{
+		"id": "wizard",
+		"desc": "Raw magic power.",
+		"tags": "t_tier4,t_manaclass,t_knowledgeclass",
+		"require": "g.tier3>0&&g.magelore>=25",
+		"cost": {
+			"research": 5000,
+			"arcana": 25,
+			"tomes": 20,
+			"runestones": 5
+		},
+		"result": {
+			"sp": 2
+		},
+		"mod": {
+			"tier4": true,
+			"languages.max": 2,
+			"conjuration.max": 1,
+			"crafting.max": 1,
+			"magelore.max": 3,
+			"spellcraft.max": 3,
+			"mana.max": 4,
+			"mana.rate": "5%",
+			"mysticism.max": 1,
+			"spelllist.max": 5
+		},
+		"flavor": "'Do not take me for some conjurer of cheap tricks.'"
+	},
+	{
+		"id": "wizard2",
+		"alias": "dhrunic wizard",
+		"name": "dhrunic wizard",
+		"desc": "Raw magic power.",
+		"tags": "t_tier5,t_manaclass,t_knowledgeclass",
+		"require": "g.tier4>0&&g.magelore>=30",
+		"cost": {
+			"research": 20000,
+			"arcana": 30,
+			"tomes": 30,
+			"runestones": 10
+		},
+		"mod": {
+			"tier5": true,
+			"languages.max": 2,
+			"firelore.max": 1,
+			"waterlore.max": 1,
+			"airlore.max": 1,
+			"lightlore.max": 1,
+			"crafting.max": 2,
+			"magelore.max": 5,
+			"mana.max": 4,
+			"mana.rate": "10%",
+			"mysticism.max": 1,
+			"mysticism.mod.mana.rate": 0.05,
+			"spelllist.max": 5
+		},
+		"flavor": "In the end it was three Thule Wizards and The Necromancer who brought the locks to heel."
+	},
+	{
+		"id": "wizard3",
+		"name": "mythic wizard",
+		"desc": "Their names reappear throughout the ages, and few believe they ever existed.",
+		"tags": "t_tier6,t_manaclass,t_knowledgeclass",
+		"require": "g.tier5>0&&g.magelore>=35&&g.spellcraft>=10",
+		"cost": {
+			"research": 20000,
+			"arcana": 75,
+			"tomes": 50,
+			"sindel": 3,
+			"runestones": 10
+		},
+		"mod": {
+			"tier6": true,
+			"spellcraft.max": 1,
+			"firelore.max": 1,
+			"enchanting.max": 1,
+			"waterlore.max": 1,
+			"earthlore.max": 1,
+			"crafting.max": 2,
+			"history.max": 1,
+			"potions.max": 1,
+			"alchemy.max": 1,
+			"mana.max": 5,
+			"mana.rate": "15%",
+			"mysticism.max": 2,
+			"spelllist.max": 5
+		},
+		"flavor": "After a mythic ascends, even the Archlocks curb their appetites."
+	}
+]

@@ -1,0 +1,298 @@
+[   
+	{
+		"id": "space",
+		"name": "floor space",
+		"desc": "Available space.",
+		"hide": true,
+		"reverse": true,
+		"reverseDisplay": true,
+		"max": 0
+	},
+	{
+		"id": "gold",
+		"group": "basic",
+		"desc": "Gold coins.",
+		"locked": false,
+		"max": 5,
+		"sortOrder": 5
+	},
+	{
+		"id": "rage",
+		"tags": "primal, fighting",
+		"desc": "Raw anger given direction.",
+		"unit": false,
+		"require": "battleintent",
+		"name": "rage",
+		"max": 0,
+		"sortOrder": 7
+	},    
+	{
+		"id": "focus",
+		"tags": "primal, crafting",
+		"desc": "Block the world out.",
+		"unit": false,
+		"require": "focusintent",
+		"name": "focus",
+		"max": 0,
+		"sortOrder": 9
+	},
+	{
+		"id": "mana",
+		"tags": "manas,prismatic",
+		"desc": "Raw magical energy.",
+		"unit": false,
+		"require": "magelore",
+		"name": "mana",
+		"max": 0,
+		"sortOrder": 10
+	},
+	{
+		"id": "air",
+		"require": "airlore",
+		"unit": false,
+		"tags": "manas,element,prismatic",
+		"desc": "Air mana.",
+		"max": 0,
+		"sortOrder": 20
+	},
+	{
+		"id": "earth",
+		"unit": false,
+		"tags": "manas,element,prismatic",
+		"require": "earthlore",
+		"desc": "Earth mana.",
+		"max": 0,
+		"sortOrder": 30
+	},
+	{
+		"id": "fire",
+		"require": "firelore",
+		"unit": false,
+		"tags": "manas,element,prismatic",
+		"desc": "Fire mana.",
+		"max": 0,
+		"sortOrder": 40
+	},
+	{
+		"id": "water",
+		"unit": false,
+		"tags": "manas,element,prismatic",
+		"desc": "Water mana.",
+		"require": "waterlore",
+		"max": 0,
+		"sortOrder": 50
+	},
+	{
+		"id": "research",
+		"group": "knowledge",
+		"desc": "Research into the Arcane.",
+		"max": 10,
+		"sortOrder": 105
+	},
+	{
+		"id": "arcana",
+		"group": "knowledge",
+		"school": "arcane",
+		"desc": "Profound mystical knowledge.",
+		"max": 0,
+		"sortOrder": 110
+	},
+	{
+		"id": "scrolls",
+		"group": "knowledge",
+		"desc": "Scroll of arcane lore.",
+		"max": 10,
+		"sortOrder": 115,
+		"mod": {
+			"research.rate": 0.005,
+			"research.max": 1
+		}
+	},
+	{
+		"id": "codices",
+		"name": "codices",
+		"group": "knowledge",
+		"desc": "Codex of arcane lore.",
+		"max": 10,
+		"sortOrder": 120,
+		"mod": {
+			"research.rate": 0.07,
+			"research.max": 5
+		}
+	},
+	{
+		"id": "tomes",
+		"name": "tomes",
+		"group": "knowledge",
+		"desc": "A hefty tome of knowledge.",
+		"max": 5,
+		"sortOrder": 125,
+		"mod": {
+			"research.max": 7,
+			"arcana.rate": 0.001,
+			"magelore.rate": 0.01,
+			"magelore.max": "0.1//100/-10"
+		}
+	},
+	{
+		"id": "gems",
+		"name": "gemstones",
+		"group": "gems",
+		"desc": "Various fine gemstones.",
+		"max": 5,
+		"sortOrder": 205
+	},
+	{
+		"id": "managem",
+		"tags": "magicgems,prismaticgems",
+		"group": "gems",
+		"name": "arcane gem",
+		"desc": "Gem infused with arcane energy.",
+		"max": 2,
+		"sortOrder": 215
+	},
+	{
+		"id": "airgem",
+		"tags": "magicgems,prismaticgems,elementalgems",
+		"group": "gems",
+		"name": "air gem",
+		"desc": "Gem imbued with the essence of air.",
+		"max": 2,
+		"sortOrder": 220
+	},
+	{
+		"id": "earthgem",
+		"tags": "magicgems,prismaticgems,elementalgems",
+		"group": "gems",
+		"name": "earth gem",
+		"desc": "Gem imbued with the essence of earth.",
+		"max": 2,
+		"sortOrder": 225
+	},
+	{
+		"id": "firegem",
+		"tags": "magicgems,prismaticgems,elementalgems",
+		"group": "gems",
+		"name": "fire gem",
+		"desc": "Gem imbued with the essence of fire.",
+		"max": 2,
+		"sortOrder": 230
+	},
+	{
+		"id": "watergem",
+		"tags": "magicgems,prismaticgems,elementalgems",
+		"group": "gems",
+		"name": "water gem",
+		"desc": "Gem imbued with the essence of water.",
+		"max": 2,
+		"sortOrder": 235
+	},
+	{
+		"id": "runestones",
+		"name": "rune stones",
+		"group": "runes",
+		"desc": "Runes carved on pieces of stone.",
+		"tags": "t_runes",
+		"max": 10,
+		"sortOrder": 305,
+		"mod": {
+			"research.max": "1%",
+			"runelore.rate": "0.02//100/-8",
+			"runelore.max": "0.05//100/-20"
+		},
+		"flavor": ""
+	},
+	{
+		"id": "manarune",
+		"name": "arcane runes",
+		"tags": "t_runes,prismaticrunes",
+		"group": "runes",
+		"desc": "The surging energy of this rune can be felt even by the least talented of mages.",
+		"max": 10,
+		"sortOrder": 315,
+		"mod": {
+			"research.max": 10
+		},
+		"flavor": ""
+	},
+	{
+		"id": "airrune",
+		"name": "air runes",
+		"tags": "t_runes,elementalrunes,prismaticrunes",
+		"group": "runes",
+		"desc": "Rune etched with solid air.",
+		"max": 10,
+		"sortOrder": 320,
+		"mod": {
+			"research.max": 10
+		},
+		"flavor": ""
+	},
+	{
+		"id": "earthrune",
+		"name": "earth runes",
+		"tags": "t_runes,elementalrunes,prismaticrunes",
+		"group": "runes",
+		"desc": "Rune ingrained with moonstone.",
+		"max": 10,
+		"sortOrder": 325,
+		"mod": {
+			"research.max": 10
+		},
+		"flavor": ""
+	},
+	{
+		"id": "firerune",
+		"name": "flame runes",
+		"tags": "t_runes,elementalrunes,prismaticrunes",
+		"group": "runes",
+		"desc": "Rune etched with lines of fire.",
+		"max": 10,
+		"sortOrder": 330,
+		"mod": {
+			"research.max": 10
+		},
+		"flavor": ""
+	},
+	{
+		"id": "waterrune",
+		"name": "water runes",
+		"tags": "t_runes,elementalrunes,prismaticrunes",
+		"group": "runes",
+		"desc": "Rune lined in flowing water.",
+		"max": 10,
+		"sortOrder": 335,
+		"mod": {
+			"research.max": 10
+		},
+		"flavor": ""
+	},
+	{
+		"id": "herbs",
+		"group": "materials",
+		"desc": "Special plants for potions and alchemy.",
+		"max": 10,
+		"sortOrder": 405
+	},
+	{
+		"id": "leather",
+		"group": "materials",
+		"desc": "Various animal pelts.",
+		"max": 10,
+		"sortOrder": 415
+	},
+	{
+		"id": "wood",
+		"group": "materials",
+		"desc": "Wood chpped from a tree.",
+		"max": 10,
+		"sortOrder": 425
+	},
+	{
+		"id": "iron",
+		"group": "materials",
+		"desc": "Iron, mined from the earth.",
+		"max": 10,
+		"sortOrder": 435
+	}
+]

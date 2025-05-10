@@ -47,17 +47,7 @@ class Game {
     createNewCharacter(name) {
         // Create a new character instance
         this.player = new Character({
-            name: name,
-            // You can add more initialization data here
-            stats: {
-                strength: 5,
-                intelligence: 5,
-                charisma: 5,
-                endurance: 5
-            },
-            currencies: {
-                money: 10
-            }
+            name: name
         });
         
         // Save character to local storage
@@ -102,10 +92,6 @@ class Game {
             <p>Name: ${this.player.name}</p>
             <p>Level: ${this.player.level}</p>
             <p>Class: ${this.player.class}</p>
-            <p>Strength: ${this.player.stats.strength}</p>
-            <p>Intelligence: ${this.player.stats.intelligence}</p>
-            <p>Charisma: ${this.player.stats.charisma}</p>
-            <p>Endurance: ${this.player.stats.endurance}</p>
         `;
     }
     

@@ -1,0 +1,239 @@
+[
+	{
+		"id": "crafting",
+		"need": "workspace",
+		"desc": "An absolutely vital skill for a wizard to craft arcane items.",
+		"buy": {
+			"research": 20
+		},
+		"run": {
+			"stamina": 0.3
+		},
+		"result": {
+			"sp": 0.1
+		},
+		"mod": {
+			"t_craftwork.rate": "1%",
+			"research.max": 1
+		}
+	},
+	{
+		"id": "magelore",
+		"name": "mage lore",
+		"school": "arcane",
+		"tags": "t_school",
+		"verb": "reading lore",
+		"desc": "Nothing is more important to a wizard than the depth of their lore.",
+		"require": "g.apprentice>0",
+		"buy": {
+			"research": 20
+		},
+		"run": {
+			"stamina": 0.2
+		},
+		"result": {
+			"arcana": 1
+		},
+		"mod": {
+			"research.max": 5,
+			"spelllist.max": 0.5,
+			"arcana.max": 1,
+			"player.hits.mana": 0.2
+		}
+	},
+	{
+		"id": "runelore",
+		"alias": "runes",
+		"name": "runic lore",
+		"school": "arcane",
+		"verb": "translating",
+		"desc": "Study ancient Dhrunic runes.",
+		"require": "g.tier2>0&&g.dwarfbook>0",
+		"level": 10,
+		"buy": {
+			"sp": 3
+		},
+		"run": {
+			"stamina": 0.2,
+			"research": 1
+		},
+		"result": {
+			"arcana": 0.1,
+			"sp": 0.05
+		},
+		"mod": {
+			"research.max": "0.1%",
+			"languages.rate": "20+3%",
+			"languages.max": 0.2,
+			"lore.rate": "50+5%",
+			"lore.max": 0.2,
+			"craftrune.result.runestones": 0.05
+		},
+		"flavor": ""
+	},
+	{
+		"id": "herbalism",
+		"school": "nature",
+		"require": "lore",
+		"need": "plantsource",
+		"buy": {
+			"research": 25
+		},
+		"run": {
+			"stamina": 0.25
+		},
+		"result": {
+			"sp": 0.01
+		},
+		"mod": {
+			"research.max": 2,
+			"herbs.max": 2
+		}
+	},
+	{
+		"id": "languages",
+		"school": "lore",
+		"require": "lore",
+		"desc": "Books and scrolls are written in many obscure languages. Learn as many as possible.",
+		"verb": "linguisticizing",
+		"buy": {
+			"research": 10
+		},
+		"run": {
+			"stamina": 0.2
+		},
+		"result": {
+			"sp": 0.05
+		},
+		"mod": {
+			"research.rate": 0.05,
+			"research.max": 5,
+			"lore.rate": 0.1,
+			"t_languagework.rate":"0.5%"
+		}
+	},
+	{
+		"id": "history",
+		"name": "world lore",
+		"require": "g.languages>=6",
+		"desc": "The knowledge of what has come before reveals what is yet possible.",
+		"verb": "historicizing",
+		"level": 5,
+		"run": {
+			"stamina": 0.2
+		},
+		"effect": {
+			"research": 0.5
+		},
+		"result": {
+			"sp": 0.05
+		},
+		"mod": {
+			"research.max": 15,
+			"arcana.max": 0.1,
+			"s_travel.max": 0.1,
+			"s_travel.rate": 0.05,
+			"languages.rate": 0.05
+		}
+	},
+	{
+		"id": "firelore",
+		"tags": "t_school,elemental",
+		"name": "pyromancy",
+		"desc": "The investigation of fire.",
+		"need": "firesource",
+		"buy": {
+			"sp": 1
+		},
+		"run": {
+			"stamina": 0.2,
+			"hp": 0.2
+		},
+		"mod": {
+			"research.max": 1,
+			"fire.max": 1,
+			"fire.rate": 0.01,
+			"player.hits.fire": 0.2
+		},
+		"flavor": "Dry is good and wind is better."
+	},
+	{
+		"id": "earthlore",
+		"name": "geomancy",
+		"tags": "t_school,elemental",
+		"need": "earthsource",
+		"buy": {
+			"sp": 1
+		},
+		"run": {
+			"stamina": 0.3
+		},
+		"mod": {
+			"research.max": 1,
+			"earth": {
+				"max": 1,
+				"rate": 0.01
+			},
+			"player.hits.earth": 0.2
+		}
+	},
+	{
+		"id": "waterlore",
+		"name": "aquamancy",
+		"desc": "The study of water.",
+		"verb": "studying water",
+		"tags": "elemental,t_school",
+		"buy": {
+			"sp": 1
+		},
+		"need": "watersource",
+		"run": {
+			"stamina": 0.2
+		},
+		"mod": {
+			"research.max": 1,
+			"water": {
+				"max": 1,
+				"rate": 0.01
+			},
+			"player.hits.water": 0.2
+		}
+	},
+	{
+		"id": "airlore",
+		"name": "aeromancy",
+		"desc": "The study of air.",
+		"verb": "studying air",
+		"tags": "elemental,t_school",
+		"buy": {
+			"sp": 1
+		},
+		"need": "airsource",
+		"run": {
+			"stamina": 0.2
+		},
+		"mod": {
+			"research.max": 1,
+			"air": {
+				"max": 1,
+				"rate": 0.01
+			},
+			"player.hits.air": 0.2
+		}
+	},
+	{
+		"id": "alchemy",
+		"school": "elemental",
+		"require": "g.tier0>0&&g.herbalism>=4",
+		"run": {
+			"stamina": 0.4
+		},
+		"result": {
+			"sp": 0.1
+		},
+		"mod": {
+			"research.max": 5,
+			"gold.rate": 0.01
+		}
+	}
+]
