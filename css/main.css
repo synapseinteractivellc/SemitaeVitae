@@ -11,11 +11,44 @@ body {
 
 /* Header styling */
 .header {
-    width: 100%;
-    background-color: white;
-    text-align: left;
-    padding: 0.5rem 2rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.header-right {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.header-content {
+    text-align: center;
+}
+
+.header-button {
+    padding: 6px 12px;
+    background-color: #f0f2f5;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.header-button:hover {
+    background-color: #2c5ea0;
+    color: white;
+}
+
+#wipe-button:hover {
+    background-color: #c0392b;
+    color: white;
 }
 
 #character-info {
@@ -175,13 +208,188 @@ p {
     background-color: #2c5ea0;
 }
 
+/* New styles for resource system */
+
+/* Resource Panel Styles */
+.resource-group {
+    margin-bottom: 10px;
+}
+
+.group-header {
+    cursor: pointer;
+    font-weight: bold;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.collapse-icon {
+    display: inline-block;
+    width: 15px;
+    transition: transform 0.3s;
+}
+
+.resource {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0 3px 15px;
+    font-size: 0.9rem;
+}
+
+.resource-name {
+    cursor: help;
+}
+
+/* Stats Panel Styles */
+.current-action {
+    margin-bottom: 15px;
+    padding: 5px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.action-name {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 15px;
+    background-color: #e0e0e0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background-color: #3a7bd5;
+    width: 0%;
+    transition: width 0.3s;
+}
+
+/* Updated Stats Panel Styles */
+.stat-resource {
+    margin: 10px 0;
+}
+
+.stat-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.stat-name {
+    flex: 0 0 80px; /* Fixed width for the name */
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+.stat-bar-container {
+    position: relative;
+    flex: 1; /* Take up remaining space */
+    height: 20px;
+    background-color: #e0e0e0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.stat-bar {
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s;
+}
+
+.stat-value {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #333;
+}
+
+/* Resource color classes */
+.resource-red {
+    background-color: #ff6b6b;
+}
+
+.resource-green {
+    background-color: #51cf66;
+}
+
+.resource-blue {
+    background-color: #339af0;
+}
+
+.resource-purple {
+    background-color: #9775fa;
+}
+
+.resource-orange {
+    background-color: #ffa94d;
+}
+
+.resource-cyan {
+    background-color: #66d9e8;
+}
+
+.resource-brown {
+    background-color: #a9815d;
+}
+
+/* Game Panel Styles */
+.task-group {
+    margin-bottom: 15px;
+}
+
+.task-group-header {
+    cursor: pointer;
+    font-weight: bold;
+    padding: 5px 0;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.task-group-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.task-button {
+    padding: 8px 12px;
+    background-color: #3a7bd5;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.task-button:hover {
+    background-color: #2c5ea0;
+}
+
+.task-button.disabled {
+    background-color: #ccc;
+    color: #888;
+    cursor: not-allowed;
+}
+
+/* Log panel styles */
 .log-entries {
+    max-height: calc(100% - 40px);
     overflow-y: auto;
-    max-height: calc(100% - 30px); /* Leave room for heading */
 }
 
 .log-entries p {
     margin: 3px 0;
     padding: 3px;
     border-bottom: 1px solid #f0f0f0;
+    font-size: 0.9rem;
 }

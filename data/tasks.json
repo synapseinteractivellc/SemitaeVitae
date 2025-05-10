@@ -21,7 +21,6 @@
 		"desc": "Working in the forest.",
 		"verb": "chopping",
 		"fill": "wood",
-		"locked": false,
 		"cost": {
 			"stamina": 1
 		},
@@ -37,7 +36,6 @@
 		"desc": "Working in the forest.",
 		"verb": "hunting",
 		"fill": "leather",
-		"locked": false,
 		"cost": {
 			"stamina": 1
 		},
@@ -46,5 +44,21 @@
 		},
 		"flavor": "It's stable employment.",
 		"group": "starting out"
-	}    
+	},
+    {
+		"id": "rest",
+		"name": "relax",
+		"verb": "relaxing",
+		"slot": "rest",
+		"locked": false,
+		"perpetual": true,
+		"fill": ["stamina", "hp", "prismatic"],
+		"effect": {
+			"prismatic": { "value": 0.5 },
+			"stamina": 0.5,
+			"hp": 1
+		},
+        "flavor": "A moment of peace and quiet.",
+		"group": "rest"
+	}
 ]

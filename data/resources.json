@@ -17,72 +17,6 @@
 		"sortOrder": 5
 	},
 	{
-		"id": "rage",
-		"tags": "primal, fighting",
-		"desc": "Raw anger given direction.",
-		"unit": false,
-		"require": "battleintent",
-		"name": "rage",
-		"max": 0,
-		"sortOrder": 7
-	},    
-	{
-		"id": "focus",
-		"tags": "primal, crafting",
-		"desc": "Block the world out.",
-		"unit": false,
-		"require": "focusintent",
-		"name": "focus",
-		"max": 0,
-		"sortOrder": 9
-	},
-	{
-		"id": "mana",
-		"tags": "manas,prismatic",
-		"desc": "Raw magical energy.",
-		"unit": false,
-		"require": "magelore",
-		"name": "mana",
-		"max": 0,
-		"sortOrder": 10
-	},
-	{
-		"id": "air",
-		"require": "airlore",
-		"unit": false,
-		"tags": "manas,element,prismatic",
-		"desc": "Air mana.",
-		"max": 0,
-		"sortOrder": 20
-	},
-	{
-		"id": "earth",
-		"unit": false,
-		"tags": "manas,element,prismatic",
-		"require": "earthlore",
-		"desc": "Earth mana.",
-		"max": 0,
-		"sortOrder": 30
-	},
-	{
-		"id": "fire",
-		"require": "firelore",
-		"unit": false,
-		"tags": "manas,element,prismatic",
-		"desc": "Fire mana.",
-		"max": 0,
-		"sortOrder": 40
-	},
-	{
-		"id": "water",
-		"unit": false,
-		"tags": "manas,element,prismatic",
-		"desc": "Water mana.",
-		"require": "waterlore",
-		"max": 0,
-		"sortOrder": 50
-	},
-	{
 		"id": "research",
 		"group": "knowledge",
 		"desc": "Research into the Arcane.",
@@ -294,5 +228,89 @@
 		"desc": "Iron, mined from the earth.",
 		"max": 10,
 		"sortOrder": 435
+	},
+	{
+		"id": "hp",
+		"desc": "Life force.",
+		"unit": false,        
+		"locked": false,
+		"name": "life",
+		"max": 5,
+		"sortOrder": 705
+	},    
+	{
+		"id": "stamina",
+		"desc": "Ability to continously work.",
+		"unit": false,        
+		"locked": false,
+		"name": "stamina",
+		"max": 5,
+		"sortOrder": 710
+	},    
+	{
+		"id": "rage",
+		"tags": "primal, fighting",
+		"desc": "Raw anger given direction.",
+		"unit": false,
+		"require": "battleintent",
+		"name": "rage",
+		"max": 0,
+		"sortOrder": 715
+	},    
+	{
+		"id": "focus",
+		"tags": "primal, crafting",
+		"desc": "Block the world out.",
+		"unit": false,
+		"require": "focusintent",
+		"name": "focus",
+		"max": 0,
+		"sortOrder": 725
+	},
+	{
+		"id": "mana",
+		"tags": "manas,prismatic",
+		"desc": "Raw magical energy.",
+		"unit": false,
+		"require": "magelore",
+		"name": "mana",
+		"max": 0,
+		"sortOrder": 735
+	},
+	{
+		"id": "air",
+		"require": "airlore",
+		"unit": false,
+		"tags": "manas,element,prismatic",
+		"desc": "Air mana.",
+		"max": 0,
+		"sortOrder": 740
+	},
+	{
+		"id": "earth",
+		"unit": false,
+		"tags": "manas,element,prismatic",
+		"require": "earthlore",
+		"desc": "Earth mana.",
+		"max": 0,
+		"sortOrder": 745
+	},
+	{
+		"id": "fire",
+		"require": "firelore",
+		"unit": false,
+		"tags": "manas,element,prismatic",
+		"desc": "Fire mana.",
+		"max": 0,
+		"sortOrder": 750
+	},
+	{
+		"id": "water",
+		"unit": false,
+		"tags": "manas,element,prismatic",
+		"desc": "Water mana.",
+		"require": "waterlore",
+		"max": 0,
+		"sortOrder": 755
 	}
 ]
