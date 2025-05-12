@@ -244,7 +244,7 @@
 		"unit": false,        
 		"locked": false,
 		"name": "stamina",
-		"max": 5,
+		"max": 10,
 		"sortOrder": 710
 	},    
 	{

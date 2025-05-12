@@ -617,6 +617,7 @@ class Game {
                 const upgrade = this.upgradeDefinitions.find(u => u.id === upgradeId);
                 const currentLevel = this.upgradeManager.getUpgradeLevel(upgradeId);
                 
+                this.updateButtonStates();
                 if (upgrade && upgrade.max && currentLevel >= upgrade.max) {
                     // Schedule a check on the next update cycle
                     setTimeout(() => this.checkGamePanelRefresh(), 100);

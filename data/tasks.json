@@ -3,7 +3,6 @@
 		"id": "cleanstables",
 		"name": "clean stables",
 		"desc": "Working from home.",
-        "length": 2000,
 		"verb": "cleaning",
 		"fill": "gold",
 		"locked": false,
@@ -12,6 +11,23 @@
 		},
 		"result": {
 			"gold": 1
+		},
+        "at": {
+			"10": {
+				"result.gold": 0.1
+			},
+			"100": {
+				"result.gold": 0.1
+			},
+			"150": {
+				"result.gold": 0.1
+			},
+            "250": {
+				"result.gold": 0.1
+			},
+            "500": {
+				"result.gold": 0.1
+			}
 		},
 		"flavor": "It's stable employment.",
 		"group": "starting out"

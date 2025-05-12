@@ -228,7 +228,6 @@ export class TaskManager {
         
         const fillResources = Array.isArray(task.fill) ? task.fill : [task.fill];
         
-        console.log(fillResources);
         // Check each fill resource
         return fillResources.every(resourceId => {
             // Check for tags in the resourceId (like "prismatic")
@@ -242,7 +241,6 @@ export class TaskManager {
                 return taggedResources.length > 0 && taggedResources.every(r => 
                     r.locked && r.max >= 0 && r.value >= r.max);
             }
-            console.log(this.player.isResourceFull(resourceId));
             // Check a single resource
             return this.player.isResourceFull(resourceId);
         });

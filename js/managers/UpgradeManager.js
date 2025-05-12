@@ -24,6 +24,10 @@ export class UpgradeManager {
             if (upgrade.max && currentLevel >= upgrade.max) {
                 return false;
             }
+
+            if (currentLevel > 0) {
+                return true;
+            }
             
             // Check if the upgrade's requirements are met
             if (upgrade.require) {
@@ -55,15 +59,27 @@ export class UpgradeManager {
      * @returns {boolean} - True if the requirement is met
      */
     checkRequirement(requirementStr) {
-        // Handle resource requirements like "resources.gold>=10"
+        // Handle resource requirements like "resources.gold>=10" or "resources.t_magicgems>=5"
         if (requirementStr.startsWith('resources.')) {
             const parts = requirementStr.split('>=');
             if (parts.length === 2) {
-                const resourceId = parts[0].split('.')[1];
+                const resourcePath = parts[0].split('.')[1];
                 const minValue = parseInt(parts[1]);
-                
-                const resource = this.player.resources[resourceId];
-                return resource && !resource.locked && resource.value >= minValue;
+                // Handle tagged resources (t_magicgems, etc.)
+                if (resourcePath.startsWith('t_')) {
+                    const tag = resourcePath.substring(2);
+                    // Find all resources with this tag
+                    const taggedResources = Object.values(this.player.resources)
+                        .filter(r => r.tags && r.tags.includes(tag) && !r.locked);
+                    
+                    // Sum up all resources with this tag
+                    const totalValue = taggedResources.reduce((sum, r) => sum + r.value, 0);
+                    return totalValue >= minValue;
+                } else {
+                    // Handle regular resources
+                    const resource = this.player.resources[resourcePath];
+                    return resource && !resource.locked && resource.value >= minValue;
+                }
             }
         }
         
@@ -77,21 +93,25 @@ export class UpgradeManager {
         if (requirementStr.startsWith('skills.')) {
             // For the test environment, we'll just assume skill requirements are met
             // In the real game, you'd check the player's skill levels
-            return true;
+            return false;
         }
         
         // Handle tag requirements
         // This handles cases like "magicgems" which might be checking for the existence
         // of a resource with that tag
         if (typeof requirementStr === 'string' && !requirementStr.includes('.') && !requirementStr.includes('>=')) {
-            // For the test, just return true for these tag-based requirements
-            // In the real game, you'd check if the player has any resources with this tag
-            return true;
+            // Check if any resources have this tag and are unlocked
+            const tag = requirementStr;
+            console.log(tag);
+            const taggedResources = Object.values(this.player.resources)
+                .filter(r => r.tags && r.tags.includes(tag) && r.locked);
+            
+            // If any resources with this tag exist and are unlocked, requirement is met
+            return taggedResources.length > 0;
         }
         
         // For other complex requirements, you would add more parsing logic here
         // For now, default to true for unrecognized requirements in the test environment
-        console.log(`Treating requirement "${requirementStr}" as met for testing purposes`);
         return true;
     }
 
