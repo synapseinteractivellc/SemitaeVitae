@@ -218,7 +218,7 @@
 	{
 		"id": "wood",
 		"group": "materials",
-		"desc": "Wood chpped from a tree.",
+		"desc": "Wood chopped from a tree.",
 		"max": 10,
 		"sortOrder": 425
 	},

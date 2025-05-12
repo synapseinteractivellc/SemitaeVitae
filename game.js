@@ -7,9 +7,7 @@ class Game {
         this.initialized = false;
         this.resourceDefinitions = [];
         this.taskDefinitions = [];
-        this.gameTickInterval = null;
-        this.tickRate = 1000; // 1 second ticks
-        
+       
         // Get DOM elements
         this.welcomePage = document.getElementById('welcome-page');
         this.gamePage = document.getElementById('game-page');
@@ -108,19 +106,8 @@ class Game {
         // Initialize resources from definitions
         this.resourceDefinitions.forEach(resourceDef => {
             this.player.initResource(resourceDef);
-            
-            // Initialize starting values for unlocked resources
-            if (resourceDef.locked === false) {
-                const resource = this.player.resources[resourceDef.id];
-                if (resource) {
-                    // Start with half max for basic resources
-                    if (resourceDef.max > 0) {
-                        resource.value = Math.floor(resourceDef.max / 2);
-                    }
-                }
-            }
         });
-        
+
         // Ensure hp and stamina are unlocked and initialized
         if (this.player.resources['hp']) {
             this.player.resources['hp'].locked = false;
@@ -152,14 +139,10 @@ class Game {
      */
     initGame() {
         if (this.initialized) return;
-        
-        // Initialize game panels
+
         this.initResourcePanel();
         this.initStatsPanel();
         this.initGamePanel();
-        
-        // Start game tick
-        this.startGameTick();
         
         this.initialized = true;
         console.log('Game initialized');
@@ -196,9 +179,10 @@ class Game {
             
             // Add resources in this group
             groupResources.forEach(resource => {
+                let resourceDisplayName = this.capitalizeFirstLetter(resource.name) || this.capitalizeFirstLetter(resource.id);
                 html += `
                     <div class="resource" id="resource-${resource.id}">
-                        <span class="resource-name" title="${resource.desc || ''}">${this.capitalizeFirstLetter(resource.name) || this.capitalizeFirstLetter(resource.id)}:</span>
+                        <span class="resource-name" title="${resource.desc || ''}">${resourceDisplayName}:</span>
                         <span class="resource-value">${Math.floor(resource.value)}/${resource.max > 0 ? resource.max : '∞'}</span>
                     </div>
                 `;
@@ -251,9 +235,10 @@ class Game {
         
         // Add each stat resource as a progress bar
         statResources.forEach(resource => {
+
             const percentage = resource.max > 0 ? (resource.value / resource.max) * 100 : 0;
             const colorClass = this.getResourceColorClass(resource.id);
-            const statName = this.capitalizeFirstLetter(resource.name) || this.capitalizeFirstLetter(resource.id);
+            let statName = this.capitalizeFirstLetter(resource.name) || this.capitalizeFirstLetter(resource.id);
             
             html += `
                 <div class="stat-resource" id="stat-${resource.id}">
@@ -301,6 +286,13 @@ class Game {
         
         // Get all available tasks
         const availableTasks = this.getAvailableTasks();
+
+        if (availableTasks.length === 0) {
+            html += `<p>No tasks available. Grow your skills.</p>`;
+            html += `</div>`;
+            this.gamePanel.innerHTML = html;
+            return;
+        }
         
         // Group tasks by their group property
         const taskGroups = this.groupTasksByProperty(availableTasks, 'group');
@@ -319,13 +311,14 @@ class Game {
             tasks.forEach(task => {
                 const isDisabled = !this.canExecuteTask(task);
                 const buttonClass = isDisabled ? 'task-button disabled' : 'task-button';
+                let taskDisplayName = this.capitalizeFirstLetter(task.name) || this.capitalizeFirstLetter(task.id);
                 
                 html += `
                     <button class="${buttonClass}" 
                             data-task-id="${task.id}" 
                             title="${task.desc || ''}"
                             ${isDisabled ? 'disabled' : ''}>
-                        ${this.capitalizeFirstLetter(task.name) || this.capitalizeFirstLetter(task.id)}
+                        ${taskDisplayName}
                     </button>
                 `;
             });
@@ -371,9 +364,9 @@ class Game {
      * @returns {Array} - Array of available tasks
      */
     getAvailableTasks() {
-        // For now, return all tasks from taskDefinitions
-        // In the future, we can filter based on requirements
-        return this.taskDefinitions;
+        // Filter tasks that are not locked
+        // A task is available if it's not explicitly locked (locked === false or locked is undefined)
+        return this.taskDefinitions.filter(task => task.locked === false);
     }
     
     /**
@@ -415,221 +408,6 @@ class Game {
         }
         
         return true;
-    }
-    
-    /**
-     * Start executing a task
-     * @param {string} taskId - Task identifier
-     */
-    startTask(taskId) {
-        const task = this.taskDefinitions.find(t => t.id === taskId);
-        if (!task) return;
-        
-        // Check if task can be executed
-        if (!this.canExecuteTask(task)) {
-            this.addToActionLog(`Cannot perform ${task.name || task.id}: insufficient resources or resource is full.`);
-            return;
-        }
-        
-        // If this is a perpetual task like rest, check if there's anything to restore
-        if (task.perpetual && task.fill) {
-            // If all fill targets are already full, don't start the task
-            if (this.shouldEndPerpetualTask(task)) {
-                this.addToActionLog(`No need to ${task.name || task.id}: all resources are already full.`);
-                return;
-            }
-        }
-        
-        // Set as current task
-        this.player.currentAction = task;
-        this.player.currentActionProgress = 0;
-        
-        // For non-perpetual tasks, set a duration
-        if (!task.perpetual) {
-            this.player.currentActionDuration = 3; // Default 3 seconds, can be customized
-        }
-        
-        // Consume resources immediately
-        if (task.cost) {
-            for (const [resourceId, amount] of Object.entries(task.cost)) {
-                this.player.subtractResource(resourceId, amount);
-            }
-        }
-        
-        this.addToActionLog(`${this.player.name} started ${task.verb || 'performing'} ${task.name || task.id}.`);
-        
-        // Update UI
-        this.updateUI();
-    }
-    
-    /**
-     * Update the game tick (called every tickRate ms)
-     */
-    updateGameTick() {
-        // Process current action
-        this.processCurrentAction();
-        
-        // Process passive resource generation
-        this.processResourceRates();
-        
-        // Update UI
-        this.updateUI();
-    }
-    
-    /**
-     * Process the current action progress
-     */
-    processCurrentAction() {
-        if (!this.player.currentAction) return;
-        
-        const task = this.player.currentAction;
-        
-        // For perpetual tasks like rest, apply effects each tick
-        if (task.perpetual && task.effect) {
-            // Apply effects to resources
-            for (const [resourceId, amount] of Object.entries(task.effect)) {
-                // Handle more complex effect structure (like prismatic)
-                if (typeof amount === 'object' && amount.value !== undefined) {
-                    // Handle special resource types like prismatic
-                    if (resourceId === 'prismatic') {
-                        // Find all resources with 'prismatic' tag and apply the effect
-                        this.applyEffectToTaggedResources('prismatic', amount.value);
-                    } else {
-                        this.player.addResource(resourceId, amount.value * (this.tickRate / 1000));
-                    }
-                } else {
-                    // Direct amount value
-                    this.player.addResource(resourceId, amount * (this.tickRate / 1000));
-                }
-            }
-            
-            // Check if task should end due to fill condition
-            if (this.shouldEndPerpetualTask(task)) {
-                this.endCurrentAction('All resources restored to maximum.');
-                return;
-            }
-        }
-        
-        // For non-perpetual tasks, increment progress
-        if (!task.perpetual) {
-            this.player.currentActionProgress += 1 / (this.player.currentActionDuration * (1000 / this.tickRate));
-            
-            // Check if action is complete
-            if (this.player.currentActionProgress >= 1) {
-                this.completeCurrentAction();
-            }
-        }
-    }
-
-    /**
-     * Apply an effect to all resources with a specific tag
-     * @param {string} tag - The tag to match
-     * @param {number} amount - Amount to add per second
-     */
-    applyEffectToTaggedResources(tag, amount) {
-        for (const resource of Object.values(this.player.resources)) {
-            if (resource.locked) continue;
-            
-            // Check if resource has the tag
-            if (resource.tags && resource.tags.includes(tag)) {
-                this.player.addResource(resource.id, amount * (this.tickRate / 1000));
-            }
-        }
-    }
-
-    /**
-     * Check if a perpetual task should end based on fill condition
-     * @param {Object} task - The task to check
-     * @returns {boolean} - True if task should end
-     */
-    shouldEndPerpetualTask(task) {
-        if (!task.fill) return false;
-        
-        // Handle fill as array or single value
-        const fillResources = Array.isArray(task.fill) ? task.fill : [task.fill];
-        
-        for (const fillTarget of fillResources) {
-            // Check if it's a tag (for prismatic etc.)
-            if (fillTarget === 'prismatic') {
-                // Check if all prismatic resources are full
-                const prismaticResources = Object.values(this.player.resources)
-                    .filter(r => !r.locked && r.tags && r.tags.includes('prismatic'));
-                
-                // If any prismatic resource is not full, continue the task
-                if (prismaticResources.some(r => !this.player.isResourceFull(r.id))) {
-                    return false;
-                }
-            } else {
-                // Regular resource check
-                if (!this.player.isResourceFull(fillTarget)) {
-                    return false;
-                }
-            }
-        }
-        
-        // If we get here, all fill conditions are met (all resources are full)
-        return true;
-    }
-
-    /**
-     * End the current action with a message
-     * @param {string} message - Optional message
-     */
-    endCurrentAction(message) {
-        const taskName = this.player.currentAction ? 
-            (this.player.currentAction.name || this.player.currentAction.id) : 'action';
-        
-        this.addToActionLog(`${this.player.name} stopped ${taskName}. ${message || ''}`);
-        
-        this.player.currentAction = null;
-        this.player.currentActionProgress = 0;
-        
-        // Update UI
-        this.updateUI();
-        
-        // Save game
-        this.saveGame();
-    }
-    
-    /**
-     * Complete the current action and award resources
-     */
-    completeCurrentAction() {
-        const task = this.player.currentAction;
-        
-        // Award resources from task result
-        if (task.result) {
-            for (const [resourceId, amount] of Object.entries(task.result)) {
-                this.player.addResource(resourceId, amount);
-            }
-        }
-        
-        this.addToActionLog(`${this.player.name} completed ${task.name || task.id}.`);
-        
-        // Reset current action
-        this.player.currentAction = null;
-        this.player.currentActionProgress = 0;
-        
-        // Save game
-        this.saveGame();
-    }
-    
-    /**
-     * Process resource generation rates
-     */
-    processResourceRates() {
-        // Process each resource's generation/consumption rate
-        for (const resource of Object.values(this.player.resources)) {
-            if (resource.locked || resource.rate === 0) continue;
-            
-            // Calculate amount to add based on rate per second
-            const amount = resource.rate * (this.tickRate / 1000);
-            
-            // Add resource (addResource handles max values)
-            if (amount !== 0) {
-                this.player.addResource(resource.id, amount);
-            }
-        }
     }
     
     /**

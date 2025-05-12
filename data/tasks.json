@@ -3,6 +3,7 @@
 		"id": "cleanstables",
 		"name": "clean stables",
 		"desc": "Working from home.",
+        "time": 3000,
 		"verb": "cleaning",
 		"fill": "gold",
 		"locked": false,
@@ -19,6 +20,7 @@
 		"id": "chopwood",
 		"name": "chop wood",
 		"desc": "Working in the forest.",
+        "time": 3000,
 		"verb": "chopping",
 		"fill": "wood",
 		"cost": {
@@ -34,6 +36,7 @@
 		"id": "huntanimals",
 		"name": "hunt animals",
 		"desc": "Working in the forest.",
+        "time": 3000,
 		"verb": "hunting",
 		"fill": "leather",
 		"cost": {
