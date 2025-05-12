@@ -51,6 +51,8 @@
     {
 		"id": "rest",
 		"name": "relax",
+        "desc": "Relaxing in peace.",
+        "time": 3000,
 		"verb": "relaxing",
 		"slot": "rest",
 		"locked": false,
