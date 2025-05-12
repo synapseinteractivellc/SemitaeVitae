@@ -11,7 +11,7 @@ class Character {
         this.class = data.class ? data.class.toLowerCase() : 'waif';
         this.level = data.level || 0;
         this.experience = data.experience || 0;
-        this.xpToNextLevel = data.expToNextLevel || 100;
+        this.xpToNextLevel = data.xpToNextLevel || 100;
         
         // Timestamps
         this.created = data.created || Date.now();
@@ -106,6 +106,42 @@ class Character {
         // Check if current value is at or above max
         return resource.value >= resource.max;
     }
+    
+    /**
+     * Check if all resources in a list are full
+     * @param {Array|string} resourceIds - List of resource IDs or a single ID
+     * @returns {boolean} - True if all specified resources are full
+     */
+    areResourcesFull(resourceIds) {
+        if (!resourceIds) return false;
+        
+        // Convert single resource to array
+        const ids = Array.isArray(resourceIds) ? resourceIds : [resourceIds];
+        
+        // Check each resource in the array
+        for (const id of ids) {
+            // Special handling for tagged resources
+            if (id.startsWith('t_')) {
+                const tag = id.substring(2);
+                // Find all resources with this tag
+                const taggedResources = Object.values(this.resources)
+                    .filter(r => r.tags && r.tags.includes(tag));
+                
+                // If any tagged resource is not full, return false
+                if (taggedResources.length === 0 || taggedResources.some(r => 
+                    r.locked || !r.max || r.max <= 0 || r.value < r.max)) {
+                    return false;
+                }
+            } 
+            // Regular resource check
+            else if (!this.isResourceFull(id)) {
+                return false;
+            }
+        }
+        
+        // All resources are full
+        return true;
+    }
         
     /**
      * Unlock a resource that was previously locked
@@ -126,6 +162,17 @@ class Character {
     getResourcesByGroup(group) {
         return Object.values(this.resources)
             .filter(resource => resource.group === group)
+            .sort((a, b) => a.sortOrder - b.sortOrder);
+    }
+    
+    /**
+     * Get all resources that have a specific tag
+     * @param {string} tag - The tag to search for
+     * @returns {Array} - Array of resources with that tag
+     */
+    getResourcesByTag(tag) {
+        return Object.values(this.resources)
+            .filter(resource => resource.tags && resource.tags.includes(tag))
             .sort((a, b) => a.sortOrder - b.sortOrder);
     }
     
@@ -155,6 +202,55 @@ class Character {
      */
     getUnlockedStatResources() {
         return this.getStatResources().filter(resource => !resource.locked);
+    }
+    
+    /**
+     * Check if player has an upgrade
+     * @param {string} upgradeId - The upgrade identifier
+     * @returns {boolean} - True if the player has the upgrade
+     */
+    hasUpgrade(upgradeId) {
+        return this.upgrades && this.upgrades[upgradeId] && this.upgrades[upgradeId] > 0;
+    }
+    
+    /**
+     * Check if a requirement string is met
+     * @param {string} requirementStr - Requirement string to evaluate
+     * @returns {boolean} - True if the requirement is met
+     */
+    meetsRequirement(requirementStr) {
+        // This is a simplified implementation
+        // In a real game, you'd parse complex expressions
+        
+        // Handle upgrade requirements like "upgrades.woodax"
+        if (requirementStr.startsWith('upgrades.')) {
+            const upgradeId = requirementStr.split('.')[1];
+            return this.hasUpgrade(upgradeId);
+        }
+        
+        // Handle resource requirements like "resources.gold>=10"
+        if (requirementStr.startsWith('resources.')) {
+            const [resourcePart, valuePart] = requirementStr.split('>=');
+            const resourceId = resourcePart.split('.')[1];
+            const minValue = parseInt(valuePart);
+            
+            const resource = this.resources[resourceId];
+            return resource && !resource.locked && resource.value >= minValue;
+        }
+        
+        // Handle skill requirements
+        if (requirementStr.startsWith('skills.')) {
+            const [skillPart, valuePart] = requirementStr.split('>=');
+            const skillId = skillPart.split('.')[1];
+            const minValue = parseInt(valuePart);
+            
+            const skill = this.skills[skillId];
+            return skill && skill.level >= minValue;
+        }
+        
+        // Return true for now for any other requirements
+        // A more complete implementation would parse complex conditions
+        return true;
     }
 }
 

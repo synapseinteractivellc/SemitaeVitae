@@ -1,5 +1,7 @@
 // Import the Character class from the updated file
 import { Character } from './js/models/Character.js';
+import { TaskManager } from './js/managers/TaskManager.js';
+import { UpgradeManager } from './js/managers/UpgradeManager.js';
 
 class Game {
     constructor() {
@@ -7,6 +9,19 @@ class Game {
         this.initialized = false;
         this.resourceDefinitions = [];
         this.taskDefinitions = [];
+        this.upgradeDefinitions = [];
+        this.taskManager = null;
+        this.upgradeManager = null;
+        
+        // For tracking UI state
+        this.lastTaskCount = 0;
+        this.lastUpgradeCount = 0;
+        this.lastPanelRefreshTime = 0;
+        
+        // Game tick settings
+        this.tickRate = 100; // Update every 100ms for smooth animations
+        this.gameTickInterval = null;
+        this.lastTick = null;
        
         // Get DOM elements
         this.welcomePage = document.getElementById('welcome-page');
@@ -27,31 +42,39 @@ class Game {
      */
     initEventListeners() {
         // Add event listener for form submission
-        this.newGameForm.addEventListener('submit', (event) => {
-            event.preventDefault();
-            this.handleStartGame();
-        });
+        if (this.newGameForm) {
+            this.newGameForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                this.handleStartGame();
+            });
+        }
 
         // Add event listeners for save and wipe buttons
-        document.getElementById('save-button')?.addEventListener('click', () => {
-            this.saveGame();
-            this.addToActionLog('Game saved.');
-        });
+        const saveButton = document.getElementById('save-button');
+        if (saveButton) {
+            saveButton.addEventListener('click', () => {
+                this.saveGame();
+                this.addToActionLog('Game saved.');
+            });
+        }
 
-        document.getElementById('wipe-button')?.addEventListener('click', () => {
-            if (confirm('Are you sure you want to wipe all saved data? This cannot be undone.')) {
-                localStorage.removeItem('semitaeVitae_player');
-                this.addToActionLog('Game data wiped.');
-                location.reload(); // Reload the page to start fresh
-            }
-        });
+        const wipeButton = document.getElementById('wipe-button');
+        if (wipeButton) {
+            wipeButton.addEventListener('click', () => {
+                if (confirm('Are you sure you want to wipe all saved data? This cannot be undone.')) {
+                    localStorage.removeItem('semitaeVitae_player');
+                    this.addToActionLog('Game data wiped.');
+                    location.reload(); // Reload the page to start fresh
+                }
+            });
+        }
     }
     
     /**
      * Handle the start game button click
      */
     handleStartGame() {
-        const playerName = this.nameInput.value.trim();
+        const playerName = this.nameInput ? this.nameInput.value.trim() : 'Player';
         
         // Validate player name
         if (!playerName) {
@@ -84,6 +107,33 @@ class Game {
             // Load tasks
             const taskResponse = await fetch('./data/tasks.json');
             this.taskDefinitions = await taskResponse.json();
+            
+            // Load classes
+            try {
+                const classesResponse = await fetch('./data/classes.json');
+                this.classDefinitions = await classesResponse.json();
+            } catch (error) {
+                console.log('Classes data not available:', error);
+                this.classDefinitions = [];
+            }
+            
+            // Load skills
+            try {
+                const skillsResponse = await fetch('./data/skills.json');
+                this.skillDefinitions = await skillsResponse.json();
+            } catch (error) {
+                console.log('Skills data not available:', error);
+                this.skillDefinitions = [];
+            }
+            
+            // Load upgrades
+            try {
+                const upgradeResponse = await fetch('./data/upgrades.json');
+                this.upgradeDefinitions = await upgradeResponse.json();
+            } catch (error) {
+                console.log('Upgrades data not available:', error);
+                this.upgradeDefinitions = [];
+            }
             
             console.log('Game data loaded successfully');
             return true;
@@ -130,8 +180,12 @@ class Game {
      */
     showGamePage() {
         // Hide welcome page and show game page
-        this.welcomePage.style.display = 'none';
-        this.gamePage.style.display = 'grid';
+        if (this.welcomePage) {
+            this.welcomePage.style.display = 'none';
+        }
+        if (this.gamePage) {
+            this.gamePage.style.display = 'grid';
+        }
     }
     
     /**
@@ -140,9 +194,17 @@ class Game {
     initGame() {
         if (this.initialized) return;
 
+        // Initialize managers
+        this.taskManager = new TaskManager(this);
+        this.upgradeManager = new UpgradeManager(this);
+
+        // Initialize UI panels
         this.initResourcePanel();
         this.initStatsPanel();
         this.initGamePanel();
+        
+        // Start the game tick
+        this.startGameTick();
         
         this.initialized = true;
         console.log('Game initialized');
@@ -152,6 +214,8 @@ class Game {
      * Initialize the resource panel
      */
     initResourcePanel() {
+        if (!this.resourcePanel) return;
+
         // Get all resource groups
         const groups = [...new Set(
             this.player.getUnlockedResources()
@@ -203,12 +267,14 @@ class Game {
                 const content = document.getElementById(`group-${group}`);
                 const icon = header.querySelector('.collapse-icon');
                 
-                if (content.style.display === 'none') {
-                    content.style.display = 'block';
-                    icon.textContent = '▼';
-                } else {
-                    content.style.display = 'none';
-                    icon.textContent = '►';
+                if (content && icon) {
+                    if (content.style.display === 'none') {
+                        content.style.display = 'block';
+                        icon.textContent = '▼';
+                    } else {
+                        content.style.display = 'none';
+                        icon.textContent = '►';
+                    }
                 }
             });
         });
@@ -218,6 +284,8 @@ class Game {
      * Initialize the stats panel
      */
     initStatsPanel() {
+        if (!this.statsPanel) return;
+
         let html = '';
         
         // Add current action display
@@ -235,7 +303,6 @@ class Game {
         
         // Add each stat resource as a progress bar
         statResources.forEach(resource => {
-
             const percentage = resource.max > 0 ? (resource.value / resource.max) * 100 : 0;
             const colorClass = this.getResourceColorClass(resource.id);
             let statName = this.capitalizeFirstLetter(resource.name) || this.capitalizeFirstLetter(resource.id);
@@ -277,48 +344,190 @@ class Game {
     }
     
     /**
-     * Initialize the game panel with task buttons
+     * Check if game panel needs to be refreshed
+     * @returns {boolean} - True if panel was refreshed
      */
-    initGamePanel() {
-        let html = `            
-            <div class="action-buttons">
-        `;
-        
-        // Get all available tasks
-        const availableTasks = this.getAvailableTasks();
-
-        if (availableTasks.length === 0) {
-            html += `<p>No tasks available. Grow your skills.</p>`;
-            html += `</div>`;
-            this.gamePanel.innerHTML = html;
-            return;
+    checkGamePanelRefresh() {
+        // Safety check
+        if (!this.initialized || !this.taskManager || !this.upgradeManager) {
+            return false;
         }
         
-        // Group tasks by their group property
-        const taskGroups = this.groupTasksByProperty(availableTasks, 'group');
+        try {
+            const availableTasks = this.getAvailableTasks();
+            const availableUpgrades = this.upgradeManager.getAvailableUpgrades();
+            
+            // Check if we need to reinitialize the panel due to changes
+            if (availableTasks.length !== this.lastTaskCount || 
+                availableUpgrades.length !== this.lastUpgradeCount) {
+                
+                // Update our tracking values
+                this.lastTaskCount = availableTasks.length;
+                this.lastUpgradeCount = availableUpgrades.length;
+                
+                // Fully reinitialize the panel
+                this.initGamePanel();
+                return true;
+            }
+            
+            return false;
+        } catch (error) {
+            console.error('Error checking for game panel refresh:', error);
+            return false;
+        }
+    }
+    
+    /**
+     * Initialize the game panel with task and upgrade buttons
+     */
+    initGamePanel() {
+        if (!this.gamePanel || !this.initialized || !this.taskManager || !this.upgradeManager) return;
+
+        let html = `<h2>Available Actions</h2>`;
         
-        // Generate HTML for each task group
-        Object.entries(taskGroups).forEach(([group, tasks]) => {
+        // Get available tasks and upgrades
+        const availableTasks = this.getAvailableTasks();
+        const availableUpgrades = this.upgradeManager.getAvailableUpgrades();
+        
+        // First display tasks section
+        if (availableTasks.length > 0) {
+            html += `<div class="section-title">Tasks</div>`;
+            
+            // Group tasks by their group property
+            const taskGroups = this.groupItemsByProperty(availableTasks, 'group');
+            
+            // Generate HTML for each task group
+            html += this.generateGroupsHTML(taskGroups, 'task');
+        }
+        
+        // Then display upgrades section
+        if (availableUpgrades.length > 0) {
+            html += `<div class="section-title">Upgrades</div>`;
+            
+            // Group upgrades by their group property
+            const upgradeGroups = this.groupItemsByProperty(availableUpgrades, 'group');
+            
+            // Generate HTML for each upgrade group
+            html += this.generateGroupsHTML(upgradeGroups, 'upgrade');
+        }
+        
+        // If no tasks or upgrades available
+        if (availableTasks.length === 0 && availableUpgrades.length === 0) {
+            html += `<p>No tasks or upgrades available. Grow your skills.</p>`;
+        }
+        
+        this.gamePanel.innerHTML = html;
+        
+        // Add event listeners for task buttons
+        document.querySelectorAll('.task-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const taskId = button.getAttribute('data-item-id');
+                if (taskId) {
+                    this.startTask(taskId);
+                }
+            });
+        });
+        
+        // Add event listeners for upgrade buttons
+        document.querySelectorAll('.upgrade-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const upgradeId = button.getAttribute('data-item-id');
+                if (upgradeId) {
+                    this.purchaseUpgrade(upgradeId);
+                }
+            });
+        });
+        
+        // Add event listeners for collapsible groups
+        document.querySelectorAll('.group-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const group = header.getAttribute('data-group');
+                const type = header.getAttribute('data-type');
+                if (group && type) {
+                    const content = document.getElementById(`${type}-group-${group}`);
+                    const icon = header.querySelector('.collapse-icon');
+                    
+                    if (content && icon) {
+                        if (content.style.display === 'none') {
+                            content.style.display = 'block';
+                            icon.textContent = '▼';
+                        } else {
+                            content.style.display = 'none';
+                            icon.textContent = '►';
+                        }
+                    }
+                }
+            });
+        });
+    }
+    
+    /**
+     * Generate HTML for groups of items (tasks or upgrades)
+     * @param {Object} groups - Grouped items
+     * @param {string} type - Type of items ('task' or 'upgrade')
+     * @returns {string} - HTML for the groups
+     */
+    generateGroupsHTML(groups, type) {
+        let html = '';
+        
+        // Generate HTML for each group
+        Object.entries(groups).forEach(([group, items]) => {
             html += `
-                <div class="task-group">
-                    <div class="task-group-header" data-group="${group}">
+                <div class="item-group">
+                    <div class="group-header" data-group="${group}" data-type="${type}">
                         <span class="collapse-icon">▼</span> ${this.capitalizeFirstLetter(group)}
                     </div>
-                    <div class="task-group-content" id="task-group-${group}">
+                    <div class="group-content" id="${type}-group-${group}">
             `;
             
-            // Add buttons for each task
-            tasks.forEach(task => {
-                const isDisabled = !this.canExecuteTask(task);
-                const buttonClass = isDisabled ? 'task-button disabled' : 'task-button';
-                let taskDisplayName = this.capitalizeFirstLetter(task.name) || this.capitalizeFirstLetter(task.id);
+            // Add buttons for each item
+            items.forEach(item => {
+                let canExecute;
+                let buttonClass;
+                
+                if (type === 'task' && this.taskManager) {
+                    canExecute = this.taskManager.canStartTask(item);
+                    buttonClass = canExecute ? 'task-button' : 'task-button disabled';
+                } else if (type === 'upgrade' && this.upgradeManager) {
+                    canExecute = this.upgradeManager.canPurchaseUpgrade(item);
+                    buttonClass = canExecute ? 'upgrade-button' : 'upgrade-button disabled';
+                } else {
+                    canExecute = false;
+                    buttonClass = type === 'task' ? 'task-button disabled' : 'upgrade-button disabled';
+                }
+                
+                let itemDisplayName = this.capitalizeFirstLetter(item.name) || this.capitalizeFirstLetter(item.id);
+                
+                // Add cost info to tooltip
+                let costInfo = '';
+                if (item.cost) {
+                    costInfo = 'Costs: ';
+                    for (const [resourceId, amount] of Object.entries(item.cost)) {
+                        costInfo += `${amount} ${resourceId}, `;
+                    }
+                    costInfo = costInfo.slice(0, -2); // Remove trailing comma and space
+                }
+                
+                let tooltip = item.desc || '';
+                if (costInfo) {
+                    tooltip += (tooltip ? '\n' : '') + costInfo;
+                }
+                
+                // For upgrades, show current level/max
+                let levelBadge = '';
+                if (type === 'upgrade' && this.upgradeManager) {
+                    const currentLevel = this.upgradeManager.getUpgradeLevel(item.id);
+                    if (currentLevel > 0) {
+                        levelBadge = `<span class="upgrade-level">${currentLevel}/${item.max || 1}</span>`;
+                    }
+                }
                 
                 html += `
                     <button class="${buttonClass}" 
-                            data-task-id="${task.id}" 
-                            title="${task.desc || ''}"
-                            ${isDisabled ? 'disabled' : ''}>
-                        ${taskDisplayName}
+                            data-item-id="${item.id}" 
+                            title="${tooltip}"
+                            ${canExecute ? '' : 'disabled'}>
+                        ${itemDisplayName}${levelBadge}
                     </button>
                 `;
             });
@@ -329,34 +538,91 @@ class Game {
             `;
         });
         
-        html += `</div>`;
+        return html;
+    }
+    
+    /**
+     * Update button states without rebuilding everything
+     */
+    updateButtonStates() {
+        // Safety checks
+        if (!this.initialized || !this.taskManager || !this.upgradeManager) {
+            return;
+        }
         
-        this.gamePanel.innerHTML = html;
-        
-        // Add event listeners for task buttons
-        document.querySelectorAll('.task-button').forEach(button => {
-            button.addEventListener('click', () => {
-                const taskId = button.getAttribute('data-task-id');
-                this.startTask(taskId);
-            });
-        });
-        
-        // Add event listeners for collapsible task groups
-        document.querySelectorAll('.task-group-header').forEach(header => {
-            header.addEventListener('click', () => {
-                const group = header.getAttribute('data-group');
-                const content = document.getElementById(`task-group-${group}`);
-                const icon = header.querySelector('.collapse-icon');
+        try {
+            // Update task button states
+            document.querySelectorAll('.task-button').forEach(button => {
+                const taskId = button.getAttribute('data-item-id');
+                if (!taskId) return;
                 
-                if (content.style.display === 'none') {
-                    content.style.display = 'block';
-                    icon.textContent = '▼';
-                } else {
-                    content.style.display = 'none';
-                    icon.textContent = '►';
+                const task = this.taskDefinitions.find(t => t.id === taskId);
+                if (!task) return;
+                
+                const canExecute = this.taskManager.canStartTask(task);
+                button.disabled = !canExecute;
+                button.classList.toggle('disabled', !canExecute);
+            });
+            
+            // Update upgrade button states
+            document.querySelectorAll('.upgrade-button').forEach(button => {
+                const upgradeId = button.getAttribute('data-item-id');
+                if (!upgradeId) return;
+                
+                const upgrade = this.upgradeDefinitions.find(u => u.id === upgradeId);
+                if (!upgrade) return;
+                
+                const canPurchase = this.upgradeManager.canPurchaseUpgrade(upgrade);
+                button.disabled = !canPurchase;
+                button.classList.toggle('disabled', !canPurchase);
+                
+                // Check if this upgrade is now maxed out
+                const currentLevel = this.upgradeManager.getUpgradeLevel(upgradeId);
+                if (upgrade.max && currentLevel >= upgrade.max) {
+                    // Hide the button if upgrade is maxed out
+                    button.style.display = 'none';
+                }
+                
+                // Update level badge if present
+                const levelBadge = button.querySelector('.upgrade-level');
+                if (levelBadge && currentLevel > 0) {
+                    levelBadge.textContent = `${currentLevel}/${upgrade.max || 1}`;
                 }
             });
-        });
+        } catch (error) {
+            console.error('Error updating button states:', error);
+        }
+    }
+    
+    /**
+     * Start a task by ID
+     * @param {string} taskId - The task identifier
+     */
+    startTask(taskId) {
+        if (this.taskManager) {
+            this.taskManager.startTask(taskId);
+        }
+    }
+    
+    /**
+     * Purchase an upgrade by ID
+     * @param {string} upgradeId - The upgrade identifier
+     */
+    purchaseUpgrade(upgradeId) {
+        if (this.upgradeManager) {
+            const success = this.upgradeManager.purchaseUpgrade(upgradeId);
+            
+            if (success) {
+                // Check if we need to reinitialize the panel due to maxed upgrade
+                const upgrade = this.upgradeDefinitions.find(u => u.id === upgradeId);
+                const currentLevel = this.upgradeManager.getUpgradeLevel(upgradeId);
+                
+                if (upgrade && upgrade.max && currentLevel >= upgrade.max) {
+                    // Schedule a check on the next update cycle
+                    setTimeout(() => this.checkGamePanelRefresh(), 100);
+                }
+            }
+        }
     }
     
     /**
@@ -366,7 +632,7 @@ class Game {
     getAvailableTasks() {
         // Filter tasks that are not locked
         // A task is available if it's not explicitly locked (locked === false or locked is undefined)
-        return this.taskDefinitions.filter(task => task.locked === false);
+        return this.taskDefinitions ? this.taskDefinitions.filter(task => task.locked !== true) : [];
     }
     
     /**
@@ -375,7 +641,7 @@ class Game {
      * @param {string} property - Property to group by
      * @returns {Object} - Grouped object
      */
-    groupTasksByProperty(array, property) {
+    groupItemsByProperty(array, property) {
         return array.reduce((grouped, item) => {
             const key = item[property] || 'misc';
             if (!grouped[key]) {
@@ -387,36 +653,28 @@ class Game {
     }
     
     /**
-     * Check if a task can be executed
-     * @param {Object} task - Task definition
-     * @returns {boolean} - True if task can be executed
-     */
-    canExecuteTask(task) {
-        // Check if the player has enough resources to execute this task
-        if (task.cost) {
-            for (const [resourceId, amount] of Object.entries(task.cost)) {
-                const resource = this.player.resources[resourceId];
-                if (!resource || resource.locked || resource.value < amount) {
-                    return false;
-                }
-            }
-        }
-        
-        // Check if the result resource is already full
-        if (task.fill && this.player.isResourceFull(task.fill)) {
-            return false;
-        }
-        
-        return true;
-    }
-    
-    /**
      * Update all UI elements
      */
     updateUI() {
-        this.updateResourcePanel();
-        this.updateStatsPanel();
-        this.updateGamePanel();
+        try {
+            this.updateResourcePanel();
+            this.updateStatsPanel();
+            
+            // Only check for panel refresh every 500ms
+            const now = Date.now();
+            if (!this.lastPanelRefreshTime || now - this.lastPanelRefreshTime > 500) {
+                this.lastPanelRefreshTime = now;
+                if (!this.checkGamePanelRefresh()) {
+                    // If we didn't do a full refresh, just update button states
+                    this.updateButtonStates();
+                }
+            } else {
+                // Just update button states
+                this.updateButtonStates();
+            }
+        } catch (error) {
+            console.error('Error in updateUI:', error);
+        }
     }
     
     /**
@@ -424,6 +682,8 @@ class Game {
      */
     updateResourcePanel() {
         // Update each resource value display
+        if (!this.player || !this.player.resources) return;
+        
         Object.values(this.player.resources)
             .filter(r => !r.locked && r.sortOrder < 705)
             .forEach(resource => {
@@ -441,53 +701,40 @@ class Game {
      * Update the stats panel
      */
     updateStatsPanel() {
+        if (!this.player) return;
+        
         // Update current action progress
         const actionNameElement = document.querySelector('.action-name');
         const progressElement = document.querySelector('.progress');
         
-        if (this.player.currentAction) {
+        if (actionNameElement && progressElement && this.player.currentAction) {
             const task = this.player.currentAction;
             const progress = this.player.currentActionProgress * 100;
             let taskDisplayName = this.capitalizeFirstLetter(task.verb || task.name || task.id);
             
             actionNameElement.textContent = 'Current Task: ' + taskDisplayName;
             progressElement.style.width = `${progress}%`;
-        } else {
+        } else if (actionNameElement && progressElement) {
             actionNameElement.textContent = 'Current Task: Idle';
             progressElement.style.width = '0%';
         }
         
         // Update stat resources
-        this.player.getUnlockedStatResources().forEach(resource => {
-            const element = document.getElementById(`stat-${resource.id}`);
-            if (element) {
-                const barElement = element.querySelector('.stat-bar');
-                const valueElement = element.querySelector('.stat-value');
-                
-                if (barElement && valueElement) {
-                    const percentage = resource.max > 0 ? (resource.value / resource.max) * 100 : 0;
-                    barElement.style.width = `${percentage}%`;
-                    valueElement.textContent = `${Math.floor(resource.value)}/${resource.max}`;
+        if (this.player.getUnlockedStatResources) {
+            this.player.getUnlockedStatResources().forEach(resource => {
+                const element = document.getElementById(`stat-${resource.id}`);
+                if (element) {
+                    const barElement = element.querySelector('.stat-bar');
+                    const valueElement = element.querySelector('.stat-value');
+                    
+                    if (barElement && valueElement) {
+                        const percentage = resource.max > 0 ? (resource.value / resource.max) * 100 : 0;
+                        barElement.style.width = `${percentage}%`;
+                        valueElement.textContent = `${Math.floor(resource.value)}/${resource.max}`;
+                    }
                 }
-            }
-        });
-    }
-    
-    /**
-     * Update the game panel (task availability)
-     */
-    updateGamePanel() {
-        // Update task button disabled states
-        document.querySelectorAll('.task-button').forEach(button => {
-            const taskId = button.getAttribute('data-task-id');
-            const task = this.taskDefinitions.find(t => t.id === taskId);
-            
-            if (task) {
-                const canExecute = this.canExecuteTask(task);
-                button.disabled = !canExecute;
-                button.classList.toggle('disabled', !canExecute);
-            }
-        });
+            });
+        }
     }
     
     /**
@@ -495,6 +742,7 @@ class Game {
      */
     startGameTick() {
         if (!this.gameTickInterval) {
+            this.lastTick = Date.now();
             this.gameTickInterval = setInterval(() => this.updateGameTick(), this.tickRate);
         }
     }
@@ -510,17 +758,38 @@ class Game {
     }
     
     /**
+     * Process a game tick
+     */
+    updateGameTick() {
+        try {
+            const now = Date.now();
+            const deltaTime = now - (this.lastTick || now);
+            this.lastTick = now;
+            
+            // Process task updates
+            if (this.taskManager) {
+                this.taskManager.processTick(deltaTime);
+            }
+            
+            // Update UI
+            this.updateUI();
+        } catch (error) {
+            console.error('Error in game tick:', error);
+        }
+    }
+    
+    /**
      * Add a message to the action log
      * @param {string} message - Message to add
      */
     addToActionLog(message) {
-        const actionLog = this.actionLog;
+        if (!this.actionLog) return;
         
         // Create container for log entries if it doesn't exist
-        let logEntries = actionLog.querySelector('.log-entries');
+        let logEntries = this.actionLog.querySelector('.log-entries');
         if (!logEntries) {
-            actionLog.innerHTML = '<h3>Action Log</h3><div class="log-entries"></div>';
-            logEntries = actionLog.querySelector('.log-entries');
+            this.actionLog.innerHTML = '<h3>Action Log</h3><div class="log-entries"></div>';
+            logEntries = this.actionLog.querySelector('.log-entries');
         }
         
         const logEntry = document.createElement('p');
@@ -535,6 +804,8 @@ class Game {
      * Save game state to localStorage
      */
     saveGame() {
+        if (!this.player) return;
+        
         // Save game state to localStorage
         localStorage.setItem('semitaeVitae_player', JSON.stringify(this.player));
     }
@@ -546,9 +817,14 @@ class Game {
         // Load game state from localStorage
         const savedPlayer = localStorage.getItem('semitaeVitae_player');
         if (savedPlayer) {
-            const playerData = JSON.parse(savedPlayer);
-            this.player = new Character(playerData);
-            return true;
+            try {
+                const playerData = JSON.parse(savedPlayer);
+                this.player = new Character(playerData);
+                return true;
+            } catch (error) {
+                console.error('Error loading saved game:', error);
+                return false;
+            }
         }
         return false;
     }
@@ -559,6 +835,7 @@ class Game {
      * @returns {string} - Capitalized string
      */
     capitalizeFirstLetter(string) {
+        if (!string) return '';
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 }
