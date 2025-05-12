@@ -223,7 +223,7 @@ class Game {
         // Add current action display
         html += `
             <div class="current-action">
-                <span class="action-name">Idle</span>
+                <span class="action-name">Current Task: Idle</span>
                 <div class="progress-bar">
                     <div class="progress" style="width: 0%"></div>
                 </div>
@@ -448,11 +448,12 @@ class Game {
         if (this.player.currentAction) {
             const task = this.player.currentAction;
             const progress = this.player.currentActionProgress * 100;
+            let taskDisplayName = this.capitalizeFirstLetter(task.verb || task.name || task.id);
             
-            actionNameElement.textContent = task.verb || task.name || task.id;
+            actionNameElement.textContent = 'Current Task: ' + taskDisplayName;
             progressElement.style.width = `${progress}%`;
         } else {
-            actionNameElement.textContent = 'Idle';
+            actionNameElement.textContent = 'Current Task: Idle';
             progressElement.style.width = '0%';
         }
         
