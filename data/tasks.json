@@ -3,7 +3,7 @@
 		"id": "cleanstables",
 		"name": "clean stables",
 		"desc": "Working from home.",
-        "time": 3000,
+        "length": 2000,
 		"verb": "cleaning",
 		"fill": "gold",
 		"locked": false,
@@ -20,14 +20,32 @@
 		"id": "chopwood",
 		"name": "chop wood",
 		"desc": "Working in the forest.",
-        "time": 3000,
+        "length": 2000,
 		"verb": "chopping",
 		"fill": "wood",
+        "require": "upgrades.woodax",
 		"cost": {
 			"stamina": 1
 		},
 		"result": {
 			"wood": 1
+		},
+        "at": {
+			"10": {
+				"result.wood": 0.1
+			},
+			"100": {
+				"result.wood": 0.1
+			},
+			"150": {
+				"result.wood": 0.1
+			},
+            "250": {
+				"result.wood": 0.1
+			},
+            "500": {
+				"result.wood": 0.1
+			}
 		},
 		"flavor": "It's stable employment.",
 		"group": "starting out"
@@ -36,23 +54,75 @@
 		"id": "huntanimals",
 		"name": "hunt animals",
 		"desc": "Working in the forest.",
-        "time": 3000,
+        "length": 2000,
 		"verb": "hunting",
 		"fill": "leather",
+        "require": "upgrades.huntingkit",
 		"cost": {
 			"stamina": 1
 		},
 		"result": {
 			"leather": 1
 		},
+        "at": {
+			"10": {
+				"result.leather": 0.1
+			},
+			"100": {
+				"result.leather": 0.1
+			},
+			"150": {
+				"result.leather": 0.1
+			},
+			"250": {
+				"result.leather": 0.1
+			},
+			"500": {
+				"result.leather": 0.1
+			}
+		},
 		"flavor": "It's stable employment.",
 		"group": "starting out"
+	},
+    {
+		"id": "buyscroll",
+		"name": "buy scroll",
+		"desc": "A novice can get by with very basic scrolls, hopefully you won't need any of the pricier ones.",
+		"require": "resources.gold>=10",
+		"cost": {
+			"gold": 10
+		},
+		"fill": "scrolls",
+		"result": {
+			"scrolls": 1
+		},
+		"group": "materials"
+	},
+    {
+		"id": "study",
+		"verb": "studying scrolls",
+		"desc": "Study arcane scrolls.",
+		"group": "research",
+		"require": "resources.scrolls>=1",
+		"fill": ["research", "arcana"],
+		"perpetual": true,
+		"run": {
+			"stamina": 0.2
+		},
+		"effect": {
+			"research": 0.55
+		},
+        "every": {
+			"100": {
+				"effect.research": "0.05:100"
+			}
+		}
+
 	},
     {
 		"id": "rest",
 		"name": "relax",
         "desc": "Relaxing in peace.",
-        "time": 3000,
 		"verb": "relaxing",
 		"slot": "rest",
 		"locked": false,

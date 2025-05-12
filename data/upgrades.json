@@ -1,4 +1,26 @@
 [
+    {
+		"id": "woodax",
+		"desc": "An ax for chopping down trees.",
+		"require": "g.gold>=10",
+		"max": 1,
+		"cost": {
+			"gold": 10
+		},
+		"flavor": "Must be a nice ax for that price.",
+		"group": "tools"
+	},
+    {
+		"id": "huntingkit",
+		"desc": "A full hunting kit: bow & arrow, skinning knife.",
+		"require": "g.gold>=25",
+		"max": 1,
+		"cost": {
+			"gold": 25
+		},
+		"flavor": "Decent kit for the money.",
+		"group": "tools"
+	},
 	{
 		"id": "pouch",
 		"desc": "Keep your money safe.",
