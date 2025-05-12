@@ -48,7 +48,7 @@
 			}
 		},
 		"flavor": "It's stable employment.",
-		"group": "starting out"
+		"group": "next steps"
 	},
     {
 		"id": "huntanimals",
@@ -82,7 +82,7 @@
 			}
 		},
 		"flavor": "It's stable employment.",
-		"group": "starting out"
+		"group": "next steps"
 	},
     {
 		"id": "buyscroll",
@@ -104,7 +104,7 @@
 		"desc": "Study arcane scrolls.",
 		"group": "research",
 		"require": "resources.scrolls>=1",
-		"fill": ["research", "arcana"],
+		"fill": ["research"],
 		"perpetual": true,
 		"run": {
 			"stamina": 0.2
@@ -117,7 +117,6 @@
 				"effect.research": "0.05:100"
 			}
 		}
-
 	},
     {
 		"id": "rest",
