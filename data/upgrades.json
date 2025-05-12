@@ -12,6 +12,7 @@
 	},
     {
 		"id": "huntingkit",
+        "name": "hunting kit",
 		"desc": "A full hunting kit: bow & arrow, skinning knife.",
 		"require": "resources.gold>=25",
 		"max": 1,

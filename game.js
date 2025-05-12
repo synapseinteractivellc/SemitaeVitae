@@ -618,6 +618,7 @@ class Game {
                 const currentLevel = this.upgradeManager.getUpgradeLevel(upgradeId);
                 
                 this.updateButtonStates();
+                this.taskManager.updateTaskLockedStatus();
                 if (upgrade && upgrade.max && currentLevel >= upgrade.max) {
                     // Schedule a check on the next update cycle
                     setTimeout(() => this.checkGamePanelRefresh(), 100);
@@ -631,8 +632,12 @@ class Game {
      * @returns {Array} - Array of available tasks
      */
     getAvailableTasks() {
-        // Filter tasks that are not locked
-        // A task is available if it's not explicitly locked (locked === false or locked is undefined)
+        // First ensure task locked statuses are up to date
+        if (this.taskManager) {
+            this.taskManager.updateTaskLockedStatus();
+        }
+        
+        // Then filter tasks that are not locked
         return this.taskDefinitions ? this.taskDefinitions.filter(task => task.locked !== true) : [];
     }
     
@@ -770,6 +775,7 @@ class Game {
             // Process task updates
             if (this.taskManager) {
                 this.taskManager.processTick(deltaTime);
+                this.taskManager.updateTaskLockedStatus();
             }
             
             // Update UI
