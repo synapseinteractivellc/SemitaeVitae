@@ -126,7 +126,7 @@
 		"slot": "rest",
 		"locked": false,
 		"perpetual": true,
-		"fill": ["stamina", "hp", "prismatic"],
+		"fill": ["stamina", "hp", "t_prismatic"],
 		"effect": {
 			"prismatic": { "value": 0.5 },
 			"stamina": 0.5,

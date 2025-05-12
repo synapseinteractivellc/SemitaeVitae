@@ -18,6 +18,7 @@ export class TaskManager {
         this.taskProgress = 0;
         this.effectInterval = null;
         this.runCostInterval = null;
+        this.resourceCheckInterval = null; // New interval for checking resource fullness
     }
 
     /**
@@ -217,6 +218,37 @@ export class TaskManager {
     }
 
     /**
+     * Check if all targeted resources for a task are full
+     * @param {Object} task - The task to check
+     * @returns {boolean} - True if all fill resources are full
+     */
+    areTaskResourcesFull(task) {
+        // If the task doesn't fill any resources, they can't be full
+        if (!task.fill) return false;
+        
+        const fillResources = Array.isArray(task.fill) ? task.fill : [task.fill];
+        
+        console.log(fillResources);
+        // Check each fill resource
+        return fillResources.every(resourceId => {
+            // Check for tags in the resourceId (like "prismatic")
+            if (resourceId.startsWith('t_')) {
+                const tag = resourceId.substring(2);
+                // Find all resources with this tag
+                const taggedResources = Object.values(this.player.resources)
+                    .filter(r => r.tags && r.tags.includes(tag));
+                
+                // If ANY tagged resources aren't full, return false
+                return taggedResources.length > 0 && taggedResources.every(r => 
+                    r.locked && r.max >= 0 && r.value >= r.max);
+            }
+            console.log(this.player.isResourceFull(resourceId));
+            // Check a single resource
+            return this.player.isResourceFull(resourceId);
+        });
+    }
+
+    /**
      * Check if a requirement is met
      * @param {string} requirementStr - The requirement string
      * @returns {boolean} - True if the requirement is met
@@ -299,6 +331,16 @@ export class TaskManager {
                 // If we can't pay the run cost, pause the task
                 if (!this.applyResourceChanges(task.run, true)) {
                     this.pauseCurrentTask();
+                }
+            }, 1000);
+        }
+        
+        // Set up resource fullness check interval (every 1000ms)
+        if (task.fill) {
+            this.resourceCheckInterval = setInterval(() => {
+                // If all resources this task fills are full, pause the task
+                if (this.areTaskResourcesFull(task)) {
+                    this.pauseTaskDueToFullResources(task);
                 }
             }, 1000);
         }
@@ -477,6 +519,12 @@ export class TaskManager {
             
             // For perpetual tasks, reset progress and continue
             if (task.perpetual) {
+                // Check if resources are full before continuing
+                if (task.fill && this.areTaskResourcesFull(task)) {
+                    this.pauseTaskDueToFullResources(task);
+                    return false;
+                }
+                
                 this.taskProgress = 0;
                 
                 // Log completion
@@ -579,6 +627,37 @@ export class TaskManager {
     }
 
     /**
+     * Pause the current task because its target resources are full
+     * @param {Object} task - The task that's being paused
+     */
+    pauseTaskDueToFullResources(task) {
+        if (!task) return;
+        
+        // Save task progress for resuming
+        task.progress = this.taskProgress;
+        this.updatePlayerTask(task);
+        
+        // Log the pause with a different message
+        let taskName = task.verb || task.name || task.id;
+        taskName = this.game.capitalizeFirstLetter(taskName);
+        this.game.addToActionLog(`Paused ${taskName} (resources full).`);
+        
+        // Clear intervals
+        this.clearIntervals();
+        
+        // Update player's reference but keep the current action
+        this.player.currentAction = null;
+        this.player.currentActionProgress = 0;
+        this.player.previousAction = task;
+        
+        // Clear current task
+        this.currentTask = null;
+        
+        // Update UI
+        this.game.updateUI();
+    }
+
+    /**
      * Resume a paused task if possible
      * @param {string} taskId - The task identifier
      * @returns {boolean} - True if task resumed successfully
@@ -635,6 +714,11 @@ export class TaskManager {
             clearInterval(this.runCostInterval);
             this.runCostInterval = null;
         }
+        
+        if (this.resourceCheckInterval) {
+            clearInterval(this.resourceCheckInterval);
+            this.resourceCheckInterval = null;
+        }
     }
 
     /**
@@ -643,6 +727,12 @@ export class TaskManager {
      */
     processTick(deltaTime) {
         if (!this.currentTask) return;
+        
+        // Check if resources are full for perpetual tasks before proceeding
+        if (this.currentTask.perpetual && this.currentTask.fill && this.areTaskResourcesFull(this.currentTask)) {
+            this.pauseTaskDueToFullResources(this.currentTask);
+            return;
+        }
         
         // Update task progress
         this.updateTaskProgress(deltaTime);
