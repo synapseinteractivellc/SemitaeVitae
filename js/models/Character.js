@@ -24,7 +24,8 @@ class Character {
         // Other systems from original code
         this.stats = data.stats || {};
         this.skills = data.skills || {};
-        this.actions = data.actions || {};
+        this.tasks = data.tasks || {};
+        this.upgrades = data.upgrades || {};
         this.quests = data.quests || {};
         this.actionQueue = data.actionQueue || [];
         this.home = data.home || {};
@@ -34,6 +35,7 @@ class Character {
         this.currentAction = data.currentAction || null;
         this.currentActionProgress = data.currentActionProgress || 0;
         this.currentActionDuration = data.currentActionDuration || 0;
+        this.previousAction = data.previousAction || null;
     }
     
     /**

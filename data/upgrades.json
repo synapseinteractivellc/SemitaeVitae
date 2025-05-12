@@ -2,7 +2,7 @@
     {
 		"id": "woodax",
 		"desc": "An ax for chopping down trees.",
-		"require": "g.gold>=10",
+		"require": "resources.gold>=10",
 		"max": 1,
 		"cost": {
 			"gold": 10
@@ -13,7 +13,7 @@
     {
 		"id": "huntingkit",
 		"desc": "A full hunting kit: bow & arrow, skinning knife.",
-		"require": "g.gold>=25",
+		"require": "resources.gold>=25",
 		"max": 1,
 		"cost": {
 			"gold": 25
@@ -24,7 +24,7 @@
 	{
 		"id": "pouch",
 		"desc": "Keep your money safe.",
-		"require": "g.gold>=5",
+		"require": "resources.gold>=5",
 		"max": 3,
 		"cost": {
 			"gold": 5
@@ -38,7 +38,7 @@
 	{
 		"id": "purse",
 		"desc": "Common way to carry coins.",
-		"require": "g.gold>=20",
+		"require": "resources.gold>=20",
 		"max": 2,
 		"cost": {
 			"gold": 15
@@ -51,7 +51,7 @@
 	{
 		"id": "satchel",
 		"desc": "Carry more scrolls.",
-		"require": "g.scrolls>=10",
+		"require": "resources.scrolls>=10",
 		"max": 1,
 		"scale": 2,
 		"cost": {
@@ -66,7 +66,7 @@
 		"id": "gembag",
 		"name": "velvet bag",
 		"desc": "Small bag keeps gems safe without scratching.",
-		"require": "g.gems>=5",
+		"require": "resources.gems>=5",
 		"max": 2,
 		"cost": {
 			"gold": 300
@@ -82,7 +82,7 @@
 		"id": "gembox",
 		"name": "gem box",
 		"desc": "Finely crafted box for storing magic gems.",
-		"require": ["tier0", "magicgems"],
+		"require": "magicgems",
 		"max": 5,
 		"cost": {
 			"gems": 15,
@@ -98,7 +98,7 @@
 		"id": "herbbag",
 		"name": "herb pouch",
 		"desc": "Bag for holding herbs.",
-		"require": "g.herbalism>=4",
+		"require": "skills.herbalism>=4",
 		"max": 3,
 		"cost": {
 			"gold": 70
@@ -113,7 +113,7 @@
 		"id": "runebag",
 		"name": "rune pouch",
 		"desc": "Pouch for holding runes.",
-		"require": "g.runelore>=2",
+		"require": "skills.runelore>=2",
 		"max": 5,
 		"cost": {
 			"gems": 5,
