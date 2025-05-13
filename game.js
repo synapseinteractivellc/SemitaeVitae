@@ -184,7 +184,7 @@ class Game {
             this.welcomePage.style.display = 'none';
         }
         if (this.gamePage) {
-            this.gamePage.style.display = 'grid';
+            this.gamePage.style.display = 'flex';
         }
     }
     
