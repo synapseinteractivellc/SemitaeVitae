@@ -353,6 +353,15 @@ export class TaskManager {
             if (isSubtraction) {
                 this.player.subtractResource(resourceId, amount);
             } else {
+                // First, if this is a result (not a cost) and the resource is locked, unlock it
+                // This ensures resources produced by tasks become available
+                const resource = this.player.resources[resourceId];
+                if (resource && resource.locked) {
+                    resource.locked = false;
+                    console.log(`Unlocked resource from task result: ${resourceId}`);
+                    this.game.addToActionLog(`Unlocked ${this.game.capitalizeFirstLetter(resource.name || resourceId)}.`);
+                }
+                
                 this.player.addResource(resourceId, amount);
             }
         }
@@ -408,6 +417,14 @@ export class TaskManager {
         
         // Apply effects to resources
         for (const [resourceId, effect] of Object.entries(task.effect)) {
+            // Check if resource is locked and unlock it if needed
+            const resource = this.player.resources[resourceId];
+            if (resource && resource.locked) {
+                resource.locked = false;
+                console.log(`Unlocked resource from task effect: ${resourceId}`);
+                this.game.addToActionLog(`Unlocked ${this.game.capitalizeFirstLetter(resource.name || resourceId)}.`);
+            }
+            
             // Handle complex effect objects with value property
             if (typeof effect === 'object' && effect.value !== undefined) {
                 this.player.addResource(resourceId, effect.value);

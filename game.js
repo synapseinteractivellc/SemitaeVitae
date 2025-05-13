@@ -194,6 +194,9 @@ class Game {
     initGame() {
         if (this.initialized) return;
 
+        // Initialize resource tracking
+        this._lastUnlockedResourceCount = this.player.getUnlockedResources().length;
+
         // Initialize managers
         this.taskManager = new TaskManager(this);
         this.upgradeManager = new UpgradeManager(this);
@@ -216,7 +219,7 @@ class Game {
     initResourcePanel() {
         if (!this.resourcePanel) return;
 
-        // Get all resource groups
+        // Get all resource groups from unlocked resources
         const groups = [...new Set(
             this.player.getUnlockedResources()
                 .filter(r => r.sortOrder < 705)
@@ -663,7 +666,19 @@ class Game {
      */
     updateUI() {
         try {
-            this.updateResourcePanel();
+            // Check if we need to fully reinitialize the resource panel
+            // This is needed when resources get unlocked
+            const unlockedResourceCount = this.player.getUnlockedResources().length;
+            
+            // If unlocked resource count changed, reinitialize the panel
+            if (this._lastUnlockedResourceCount !== unlockedResourceCount) {
+                this._lastUnlockedResourceCount = unlockedResourceCount;
+                this.initResourcePanel();
+            } else {
+                // Otherwise just update resource values
+                this.updateResourcePanel();
+            }
+            
             this.updateStatsPanel();
             
             // Only check for panel refresh every 500ms
@@ -682,6 +697,7 @@ class Game {
             console.error('Error in updateUI:', error);
         }
     }
+
     
     /**
      * Update just the resource values in the resource panel

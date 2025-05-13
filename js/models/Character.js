@@ -68,7 +68,16 @@ class Character {
      */
     addResource(resourceId, amount) {
         const resource = this.resources[resourceId];
-        if (!resource || resource.locked) return false;
+        if (!resource) return false;
+        
+        // Auto-unlock resource if it would have a value after adding
+        if (resource.locked && amount > 0) {
+            resource.locked = false;
+            console.log(`Auto-unlocked resource: ${resourceId}`);
+        }
+        
+        // Don't add to locked resources
+        if (resource.locked) return false;
         
         // Calculate new value respecting maximum
         const newValue = resource.value + amount;
