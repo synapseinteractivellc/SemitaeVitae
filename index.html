@@ -35,11 +35,11 @@
 
         <!-- Game page where all the fun takes place -->
         <section id="game-page">
-            <nav>
+            <nav class="game-nav">
                 <ul>
-                    <li>Main</li>
-                    <li>Skills</li>
-                    <li>Character</li>
+                    <li class="active" data-tab="main">Main</li>
+                    <li data-tab="skills">Skills</li>
+                    <li data-tab="character">Character</li>
                 </ul>
             </nav>
             <div class="main-panel">
@@ -48,6 +48,9 @@
                 </div>
                 <div id="game-panel">
                     <h2>Game Content</h2>
+                    <div id="main-content" class="tab-content active"><!-- Your current game panel content --></div>
+                    <div id="skills-content" class="tab-content"><!-- Skills content when implemented --></div>
+                    <div id="character-content" class="tab-content"><!-- Character content when implemented --></div>
                 </div>
                 <div id="stats-panel">
                     <h3>Stats</h3>

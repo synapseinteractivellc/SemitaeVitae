@@ -866,3 +866,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const navItems = document.querySelectorAll('.game-nav li');
+    
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            // Remove active class from all items
+            navItems.forEach(nav => nav.classList.remove('active'));
+            
+            // Add active class to clicked item
+            item.classList.add('active');
+            
+            // Get the tab to show
+            const tabToShow = item.getAttribute('data-tab');
+            
+            // Here you would show/hide content based on the selected tab
+            console.log(`Switching to ${tabToShow} tab`);
+            
+            // For now just a placeholder - you'll implement this later
+            // when you have the actual content for Skills and Character tabs
+            if (tabToShow === 'main') {
+                // Code to show main content
+            } else if (tabToShow === 'skills') {
+                // Code to show skills content when implemented
+            } else if (tabToShow === 'character') {
+                // Code to show character content when implemented
+            }
+        });
+    });
+});
